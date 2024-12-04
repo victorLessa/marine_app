@@ -14,7 +14,8 @@ class CustomDrawer extends StatelessWidget {
             return ListTile(
               title: Text(
                 'Bem vindo, ${appState.state.userName}',
-                style: Theme.of(context).textTheme.titleSmall,
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
             );
           }),

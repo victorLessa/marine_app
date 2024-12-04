@@ -11,12 +11,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Meu App',
       theme: ThemeData(
-          primarySwatch: Colors.blue,
-          fontFamily: 'Montserrat',
-          textTheme: const TextTheme(
-              titleLarge: TextStyle(fontSize: 24.0),
-              titleMedium: TextStyle(fontSize: 18.0),
-              titleSmall: TextStyle(fontSize: 14.0))),
+        primarySwatch: Colors.blue,
+        fontFamily: 'Montserrat',
+        textTheme: const TextTheme(
+          titleLarge: TextStyle(fontSize: 24.0),
+          titleMedium: TextStyle(fontSize: 18.0),
+          titleSmall: TextStyle(fontSize: 14.0),
+          labelSmall: TextStyle(fontSize: 12.0),
+        ),
+      ),
       initialRoute: '/',
       routes: {
         '/': (context) => HomeScreen(),
