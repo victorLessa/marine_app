@@ -21,9 +21,7 @@ class HomeScreen extends StatelessWidget {
             children: [
               Text(
                 'Jornada de trabalho: 28/28',
-                style: TextStyle(
-                  fontSize: 14,
-                ),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               ),
               SizedBox(
                 height: 10,
@@ -41,7 +39,7 @@ class HomeScreen extends StatelessWidget {
                       color: Color.fromARGB(255, 122, 208, 255)),
                 ],
               ),
-              const Calendar(),
+              Calendar(),
             ],
           );
         },
