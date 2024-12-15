@@ -39,13 +39,13 @@ class _CalendarEventsState extends State<CalendarEvents>
           if (events.isNotEmpty) {
             return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Container(
-                height: 50,
-                width: 50,
+                height: 45,
+                width: 45,
                 alignment: Alignment.center,
                 margin: const EdgeInsets.only(left: 10),
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.red,
+                  color: Color.fromARGB(255, 123, 148, 164),
                 ),
                 child: Text(
                   day,
@@ -63,7 +63,7 @@ class _CalendarEventsState extends State<CalendarEvents>
                         margin: const EdgeInsets.only(bottom: 5),
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Colors.blue,
+                          color: events[index]["color"],
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(

@@ -50,13 +50,16 @@ class _CalendarPageState extends State<Calendar> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: events.take(3).map((event) {
+                    Color color = (event as Map<String, dynamic>?)?['color'] ??
+                        Colors.grey;
+
                     return Container(
                       margin: const EdgeInsets.symmetric(horizontal: 1.5),
                       width: 6,
                       height: 6,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.red, // Você pode personalizar a cor
+                        color: color, // Você pode personalizar a cor
                       ),
                     );
                   }).toList(),
