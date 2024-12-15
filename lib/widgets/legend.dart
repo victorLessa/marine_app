@@ -27,7 +27,7 @@ class Legend extends StatelessWidget {
         ),
         Text(
           title,
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
         )
       ],
     );

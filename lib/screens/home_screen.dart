@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marine/providers/app_provider.dart';
+import 'package:marine/widgets/calendar_events.dart';
+import 'package:marine/widgets/custom_view.dart';
 import 'package:marine/widgets/legend.dart';
 import 'package:marine/widgets/table_calendar.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +12,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomView(
       appBar: AppBar(
         title: const Text('Inicio'),
       ),
@@ -18,30 +20,38 @@ class HomeScreen extends StatelessWidget {
       body: Consumer<AppProvider>(
         builder: (ctx, appState, child) {
           return const Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Jornada de trabalho: 28/28',
-                style: TextStyle(
-                  fontSize: 14,
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      'Jornada de trabalho: 28/28',
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Legend(
+                            title: 'Embarcado',
+                            color: Color.fromRGBO(214, 0, 0, 1)),
+                        Legend(
+                            title: 'Reunião pré embarque',
+                            color: Color.fromARGB(255, 0, 156, 208)),
+                        Legend(
+                            title: 'Desembarque',
+                            color: Color.fromARGB(255, 122, 208, 255)),
+                      ],
+                    ),
+                    Calendar(),
+                  ],
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Legend(
-                      title: 'Embarcado', color: Color.fromRGBO(214, 0, 0, 1)),
-                  Legend(
-                      title: 'Reunião pré embarque',
-                      color: Color.fromARGB(255, 0, 156, 208)),
-                  Legend(
-                      title: 'Desembarque',
-                      color: Color.fromARGB(255, 122, 208, 255)),
-                ],
-              ),
-              const Calendar(),
+              Expanded(child: CalendarEvents()),
             ],
           );
         },
