@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marine/providers/app_provider.dart';
+import 'package:marine/screens/form_events.dart';
 import 'package:marine/widgets/calendar_events.dart';
 import 'package:marine/widgets/custom_view.dart';
 import 'package:marine/widgets/legend.dart';
@@ -15,6 +16,14 @@ class HomeScreen extends StatelessWidget {
     return CustomView(
       appBar: AppBar(
         title: const Text('Inicio'),
+      ),
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: () => showCustomModal(context),
+        backgroundColor: const Color.fromARGB(255, 0, 156, 208),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
       drawer: const CustomDrawer(),
       body: Consumer<AppProvider>(

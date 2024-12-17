@@ -42,7 +42,7 @@ class _CalendarEventsState extends State<CalendarEvents>
                 height: 45,
                 width: 45,
                 alignment: Alignment.center,
-                margin: const EdgeInsets.only(left: 10),
+                margin: const EdgeInsets.only(left: 0),
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.fromARGB(255, 123, 148, 164),
@@ -54,7 +54,9 @@ class _CalendarEventsState extends State<CalendarEvents>
               ),
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  padding: const EdgeInsets.only(
+                    left: 10,
+                  ),
                   child: ListView.builder(
                     itemCount: events.length,
                     itemBuilder: (context, index) {

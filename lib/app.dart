@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Meu App',
       theme: ThemeData(
+        useMaterial3: true,
         primarySwatch: Colors.blue,
         fontFamily: 'Montserrat',
         textTheme: const TextTheme(

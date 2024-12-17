@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:marine/models/event_state.dart';
+import 'package:marine/models/form_event_state.dart';
 
 class CalendarEventProvider with ChangeNotifier {
+  final ValueNotifier<DateTime> _focusedDay = ValueNotifier(DateTime.now());
+  DateTime? _selectedDay;
+
   final EventState _events = EventState(events: {
     DateTime.utc(2024, 12, 5): [
       {"name": "Evento 1", "color": Colors.blue},
@@ -15,12 +19,14 @@ class CalendarEventProvider with ChangeNotifier {
     ],
   });
 
-  DateTime? _selectedDay;
-  final ValueNotifier<DateTime> _focusedDay = ValueNotifier(DateTime.now());
+  final FormEventState _formEventState = FormEventState();
 
   Map<DateTime, List<Map<String, dynamic>>> get events => _events.events;
 
   ValueNotifier<DateTime> get focusedDay => _focusedDay;
+
+  FormEventState get formEventState => _formEventState;
+
   DateTime? get selectedDay => _selectedDay;
 
   void addFocusedDay(DateTime day) {
