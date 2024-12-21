@@ -1,0 +1,82 @@
+import 'package:flutter/material.dart';
+import 'package:marine/models/event_state.dart';
+import 'package:marine/models/form_event_state.dart';
+
+class EventProvider with ChangeNotifier {
+  final List<EventState> _eventList = [
+    EventState(
+        title: "Evento 1",
+        description: "",
+        endDay: DateTime.now(),
+        startDay: DateTime.now(),
+        startHour: TimeOfDay.now(),
+        endHour: TimeOfDay.now(),
+        color: Colors.blue),
+  ];
+
+  late FormEventState _formEventState = FormEventState();
+
+  FormEventState get formEventState => _formEventState;
+  List<EventState> get eventList => _eventList;
+
+  void setStartHour(TimeOfDay? value) {
+    if (value != null) {
+      _formEventState.startHour = value;
+      notifyListeners();
+    }
+  }
+
+  void setEndHour(TimeOfDay? value) {
+    if (value != null) {
+      _formEventState.endHour = value;
+      notifyListeners();
+    }
+  }
+
+  void setStartDay(DateTime? value) {
+    if (value != null) {
+      _formEventState.startDay = value;
+      notifyListeners();
+    }
+  }
+
+  void setEndDay(DateTime? value) {
+    if (value != null) {
+      _formEventState.endDay = value;
+      notifyListeners();
+    }
+  }
+
+  void setAllDay(bool value) {
+    _formEventState.allDay = value;
+
+    notifyListeners();
+  }
+
+  void addEvent(FormEventState eventData) {
+    _eventList.add(eventData.toJson());
+    cleanFormEvent();
+    notifyListeners();
+  }
+
+  void removeEvent(
+    DateTime day,
+    int index,
+  ) {
+    int? event = _eventList.indexWhere((event) {
+      if (day.isAfter(event.startDay) && day.isBefore(event.endDay)) {
+        return true;
+      }
+      return false;
+    });
+
+    if (!event.isNaN) {
+      _eventList.removeRange(index, index);
+      notifyListeners();
+    }
+  }
+
+  cleanFormEvent() {
+    _formEventState = FormEventState();
+  }
+}

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:marine/providers/calendar_event_provider.dart';
+import 'package:marine/models/event_state.dart';
+import 'package:marine/providers/calendar_provider.dart';
+import 'package:marine/providers/event_provider.dart';
+import 'package:marine/widgets/utils_calendar.dart';
 import 'package:provider/provider.dart';
 
 class CalendarEvents extends StatefulWidget {
@@ -30,19 +33,20 @@ class _CalendarEventsState extends State<CalendarEvents>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CalendarEventProvider>(builder: (context, appState, child) {
+    return Consumer<CalendarProvider>(builder: (context, calendarState, child) {
+      EventProvider eventProvider = Provider.of<EventProvider>(context);
       return ValueListenableBuilder<DateTime>(
-        valueListenable: appState.focusedDay,
+        valueListenable: calendarState.focusedDay,
         builder: (context, value, _) {
           String day = value.day.toString();
-          List<Map<String, dynamic>> events = appState.events[value] ?? [];
+          List<EventState> events = whereEvent(eventProvider.eventList, value);
           if (events.isNotEmpty) {
             return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Container(
                 height: 45,
                 width: 45,
                 alignment: Alignment.center,
-                margin: const EdgeInsets.only(left: 10),
+                margin: const EdgeInsets.only(left: 0),
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.fromARGB(255, 123, 148, 164),
@@ -54,7 +58,9 @@ class _CalendarEventsState extends State<CalendarEvents>
               ),
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  padding: const EdgeInsets.only(
+                    left: 10,
+                  ),
                   child: ListView.builder(
                     itemCount: events.length,
                     itemBuilder: (context, index) {
@@ -63,11 +69,11 @@ class _CalendarEventsState extends State<CalendarEvents>
                         margin: const EdgeInsets.only(bottom: 5),
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: events[index]["color"],
-                          borderRadius: BorderRadius.circular(10),
+                          color: events[index].color,
+                          borderRadius: BorderRadius.circular(5),
                         ),
                         child: Text(
-                          "${events[index]["name"]}",
+                          events[index].title,
                           style: const TextStyle(color: Colors.white),
                         ),
                       );

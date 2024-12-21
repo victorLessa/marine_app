@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
 class CustomView extends StatefulWidget {
-  final AppBar appBar;
-  final Widget drawer;
+  final AppBar? appBar;
+  final Widget? drawer;
   final Widget body;
+  final Widget? floatingActionButton;
 
   const CustomView({
     super.key,
-    required this.appBar,
-    required this.drawer,
+    this.appBar,
+    this.drawer,
     required this.body,
+    this.floatingActionButton,
   });
 
   @override
@@ -22,21 +24,20 @@ class _CustomViewState extends State<CustomView> {
     return Scaffold(
       appBar: widget.appBar,
       drawer: widget.drawer,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: widget.body,
-          ),
-          SizedBox(
-            height: 50,
-            width: double.infinity,
-            child: Container(
-              color: Colors.blue,
-              child: const Text("data"),
-            ),
-          )
-        ],
+      floatingActionButton: widget.floatingActionButton,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      bottomNavigationBar: Container(
+        height: 50,
+        color: Colors.blue,
+        child: const Center(
+            child: Text(
+          "Anúncio",
+          style: TextStyle(color: Colors.white),
+        )),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 15, right: 15),
+        child: widget.body,
       ),
     );
   }

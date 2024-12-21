@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:marine/providers/calendar_event_provider.dart';
+import 'package:marine/models/event_state.dart';
+import 'package:marine/providers/calendar_provider.dart';
+import 'package:marine/providers/event_provider.dart';
+import 'package:marine/widgets/utils_calendar.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -21,22 +24,23 @@ class _CalendarPageState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
-    final calendarEventProvider = Provider.of<CalendarEventProvider>(context);
+    final calendarProvider = Provider.of<CalendarProvider>(context);
+    final eventProvider = Provider.of<EventProvider>(context);
 
     return Column(children: [
       TableCalendar(
         locale: 'pt_BR',
         firstDay: DateTime.utc(2000, 1, 1), // Primeiro dia possível
         lastDay: DateTime.utc(2100, 12, 31), // Último dia possível
-        focusedDay: calendarEventProvider.focusedDay.value,
+        focusedDay: calendarProvider.focusedDay.value,
         calendarFormat: CalendarFormat.month, // Formato inicial do calendário
         selectedDayPredicate: (day) =>
-            isSameDay(calendarEventProvider.selectedDay, day),
-        eventLoader: (DateTime day) => calendarEventProvider.events[day] ?? [],
+            isSameDay(calendarProvider.selectedDay, day),
+        eventLoader: (DateTime day) => whereEvent(eventProvider.eventList, day),
         onDaySelected: (selectedDay, focusedDay) {
-          calendarEventProvider.addSelectedDay(selectedDay);
+          calendarProvider.addSelectedDay(context, selectedDay);
 
-          calendarEventProvider.addFocusedDay(focusedDay);
+          calendarProvider.addFocusedDay(focusedDay);
         },
         calendarBuilders: CalendarBuilders(
           todayBuilder: (context, day, focusedDay) =>
@@ -50,8 +54,7 @@ class _CalendarPageState extends State<Calendar> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: events.take(3).map((event) {
-                    Color color = (event as Map<String, dynamic>?)?['color'] ??
-                        Colors.grey;
+                    Color color = (event as EventState?)?.color ?? Colors.grey;
 
                     return Container(
                       margin: const EdgeInsets.symmetric(horizontal: 1.5),

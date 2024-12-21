@@ -1,5 +1,22 @@
-class EventState {
-  Map<DateTime, List<Map<String, dynamic>>> events;
+import 'package:flutter/material.dart';
 
-  EventState({this.events = const {}});
+class EventState {
+  String title;
+  Color color;
+  String description;
+  DateTime startDay;
+  bool? allDay;
+  DateTime endDay;
+  TimeOfDay startHour;
+  TimeOfDay endHour;
+
+  EventState(
+      {required this.title,
+      required this.color,
+      required this.startDay,
+      required this.description,
+      this.allDay = false,
+      required this.endDay,
+      required this.endHour,
+      required this.startHour});
 }

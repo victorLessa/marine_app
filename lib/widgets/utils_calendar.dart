@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:marine/models/event_state.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class Event {
@@ -42,3 +43,21 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
 final kToday = DateTime.now();
 final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
 final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
+
+List<EventState> whereEvent(List<EventState> events, DateTime dayWhere) {
+  DateTime onlyDate = DateTime(dayWhere.year, dayWhere.month, dayWhere.day);
+  List<EventState> result = events.where((event) {
+    DateTime startDay =
+        DateTime(event.startDay.year, event.startDay.month, event.startDay.day);
+    DateTime endDay =
+        DateTime(event.endDay.year, event.endDay.month, event.endDay.day);
+    if ((onlyDate.isAfter(startDay) || onlyDate.isAtSameMomentAs(startDay)) &&
+        (onlyDate.isBefore(endDay) || onlyDate.isAtSameMomentAs(endDay))) {
+      return true;
+    }
+
+    return false;
+  }).toList();
+
+  return result;
+}
