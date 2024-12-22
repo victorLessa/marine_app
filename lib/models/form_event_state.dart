@@ -34,7 +34,7 @@ class FormEventState {
     description.dispose();
   }
 
-  EventState toJson() {
+  EventState toEventState() {
     return EventState(
         title: title.text,
         color: color,

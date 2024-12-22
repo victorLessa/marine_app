@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marine/models/event_state.dart';
 import 'package:marine/models/form_event_state.dart';
+import 'package:marine/repositories/event.dart';
 
 class EventProvider with ChangeNotifier {
   final List<EventState> _eventList = [
@@ -16,8 +17,16 @@ class EventProvider with ChangeNotifier {
 
   late FormEventState _formEventState = FormEventState();
 
+  final EventRepository _eventRepository = EventRepository();
+
   FormEventState get formEventState => _formEventState;
   List<EventState> get eventList => _eventList;
+
+  Future<void> loadEvents() async {
+    _eventList.clear();
+    _eventList.addAll(await _eventRepository.getEvents());
+    notifyListeners();
+  }
 
   void setStartHour(TimeOfDay? value) {
     if (value != null) {
@@ -53,8 +62,9 @@ class EventProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void addEvent(FormEventState eventData) {
-    _eventList.add(eventData.toJson());
+  void addEvent(FormEventState eventData) async {
+    await _eventRepository.insertEvent(eventData.toEventState());
+
     cleanFormEvent();
     notifyListeners();
   }
