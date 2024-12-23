@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:marine/models/event_state.dart';
 import 'package:marine/models/form_event_state.dart';
@@ -30,6 +32,11 @@ class EventProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<EventState> findEventById(int id) async {
+    EventState result = await _eventRepository.findById(id);
+    return result;
+  }
+
   void formIsBusy(bool value) {
     formEventIsBusy = value;
     notifyListeners();
@@ -40,6 +47,16 @@ class EventProvider with ChangeNotifier {
       _formEventState.startHour = value;
       notifyListeners();
     }
+  }
+
+  void setTitle(String title) {
+    _formEventState.title.text = title;
+    notifyListeners();
+  }
+
+  void setDescription(String description) {
+    _formEventState.description.text = description;
+    notifyListeners();
   }
 
   void setEndHour(TimeOfDay? value) {
@@ -68,14 +85,23 @@ class EventProvider with ChangeNotifier {
     }
   }
 
-  void setAllDay(bool value) {
-    _formEventState.allDay = value;
+  void setAllDay(bool? value) {
+    _formEventState.allDay = value ?? false;
 
     notifyListeners();
   }
 
   Future<void> addEvent(FormEventState eventData) async {
     await _eventRepository.insertEvent(eventData.toEventState());
+
+    cleanFormEvent();
+
+    await loadEvents();
+    notifyListeners();
+  }
+
+  Future<void> editEvent(int eventId, FormEventState eventData) async {
+    await _eventRepository.updateEvent(eventId, eventData.toEventState());
 
     cleanFormEvent();
 

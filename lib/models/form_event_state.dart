@@ -36,6 +36,7 @@ class FormEventState {
 
   EventState toEventState() {
     return EventState(
+        id: 2,
         title: title.text,
         color: color,
         startDay: startDay,

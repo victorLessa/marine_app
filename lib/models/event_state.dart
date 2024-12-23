@@ -25,7 +25,6 @@ class EventState {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'title': title,
       'description': description,
       'startDay': startDay.toIso8601String(),

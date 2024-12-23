@@ -9,7 +9,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class ModalBottomCreateEvent extends StatefulWidget {
-  const ModalBottomCreateEvent({super.key});
+  final bool isEdit;
+  final int? eventId;
+
+  const ModalBottomCreateEvent({super.key, this.isEdit = false, this.eventId});
 
   @override
   State<ModalBottomCreateEvent> createState() => _ModalBottomCreateEventState();
@@ -27,7 +30,6 @@ class _ModalBottomCreateEventState extends State<ModalBottomCreateEvent> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     selectedTime = TimeOfDay.now();
   }
@@ -69,7 +71,11 @@ class _ModalBottomCreateEventState extends State<ModalBottomCreateEvent> {
 
     if (_formKey.currentState!.validate()) {
       eventState.formIsBusy(true);
-      await eventState.addEvent(formEventState);
+      if (widget.isEdit && widget.eventId != null) {
+        await eventState.editEvent(widget.eventId as int, formEventState);
+      } else {
+        await eventState.addEvent(formEventState);
+      }
       eventState.formIsBusy(false);
     }
     if (context.mounted) {

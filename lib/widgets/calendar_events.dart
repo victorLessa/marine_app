@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:marine/models/event_state.dart';
 import 'package:marine/providers/calendar_provider.dart';
 import 'package:marine/providers/event_provider.dart';
+import 'package:marine/screens/view_event.dart';
 import 'package:marine/widgets/utils_calendar.dart';
 import 'package:provider/provider.dart';
 
@@ -67,24 +68,42 @@ class _CalendarEventsState extends State<CalendarEvents>
                     child: ListView.builder(
                       itemCount: events.length,
                       itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            index > 0 ? const Divider() : Container(),
-                            Container(
-                              height: 45,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: events[index].color,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  events[index].title,
-                                  style: const TextStyle(color: Colors.white),
+                        return InkWell(
+                          onTap: () async {
+                            showModalBottomSheet(
+                                context: context,
+                                isScrollControlled:
+                                    true, // Permite que o modal ocupe o espaço necessário
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(20),
+                                  ),
                                 ),
-                              ),
-                            )
-                          ],
+                                builder: (BuildContext context) {
+                                  return ViewEvent(
+                                    eventId: events[index].id!,
+                                  );
+                                });
+                          },
+                          child: Column(
+                            children: [
+                              index > 0 ? const Divider() : Container(),
+                              Container(
+                                height: 45,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: events[index].color,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    events[index].title,
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         );
                       },
                     ),
