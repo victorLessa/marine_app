@@ -67,18 +67,24 @@ class _CalendarEventsState extends State<CalendarEvents>
                     child: ListView.builder(
                       itemCount: events.length,
                       itemBuilder: (context, index) {
-                        return Container(
-                          width: double.infinity,
-                          margin: const EdgeInsets.only(bottom: 5),
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: events[index].color,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Text(
-                            events[index].title,
-                            style: const TextStyle(color: Colors.white),
-                          ),
+                        return Column(
+                          children: [
+                            index > 0 ? const Divider() : Container(),
+                            Container(
+                              height: 45,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: events[index].color,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  events[index].title,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            )
+                          ],
                         );
                       },
                     ),

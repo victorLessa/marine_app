@@ -15,6 +15,8 @@ class EventProvider with ChangeNotifier {
         color: Colors.blue),
   ];
 
+  bool formEventIsBusy = false;
+
   late FormEventState _formEventState = FormEventState();
 
   final EventRepository _eventRepository = EventRepository();
@@ -25,6 +27,11 @@ class EventProvider with ChangeNotifier {
   Future<void> loadEvents() async {
     _eventList.clear();
     _eventList.addAll(await _eventRepository.getEvents());
+    notifyListeners();
+  }
+
+  void formIsBusy(bool value) {
+    formEventIsBusy = value;
     notifyListeners();
   }
 
@@ -40,6 +47,11 @@ class EventProvider with ChangeNotifier {
       _formEventState.endHour = value;
       notifyListeners();
     }
+  }
+
+  void setColor(Color color) {
+    _formEventState.color = color;
+    notifyListeners();
   }
 
   void setStartDay(DateTime? value) {
@@ -62,10 +74,12 @@ class EventProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void addEvent(FormEventState eventData) async {
+  Future<void> addEvent(FormEventState eventData) async {
     await _eventRepository.insertEvent(eventData.toEventState());
 
     cleanFormEvent();
+
+    await loadEvents();
     notifyListeners();
   }
 

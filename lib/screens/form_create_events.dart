@@ -3,8 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:marine/models/form_event_state.dart';
 import 'package:marine/providers/calendar_provider.dart';
 import 'package:marine/providers/event_provider.dart';
+import 'package:marine/widgets/button_loading.dart';
 import 'package:marine/widgets/timer_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class ModalBottomCreateEvent extends StatefulWidget {
   const ModalBottomCreateEvent({super.key});
@@ -28,6 +30,51 @@ class _ModalBottomCreateEventState extends State<ModalBottomCreateEvent> {
     // TODO: implement initState
     super.initState();
     selectedTime = TimeOfDay.now();
+  }
+
+  void _selectColor(BuildContext context, EventProvider eventProvider) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Selecione uma cor'),
+          content: SingleChildScrollView(
+            child: Column(children: [
+              ColorPicker(
+                pickerColor: eventProvider.formEventState.color,
+                onColorChanged: (Color color) {
+                  eventProvider.setColor(color);
+                },
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  style: FilledButton.styleFrom(backgroundColor: Colors.blue),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Selecionar'),
+                ),
+              ),
+            ]),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> submitEvent(BuildContext context, EventProvider eventState,
+      FormEventState formEventState) async {
+    if (eventState.formEventIsBusy) return;
+
+    if (_formKey.currentState!.validate()) {
+      eventState.formIsBusy(true);
+      await eventState.addEvent(formEventState);
+      eventState.formIsBusy(false);
+    }
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -239,21 +286,34 @@ class _ModalBottomCreateEventState extends State<ModalBottomCreateEvent> {
                             return null;
                           },
                         ),
+
+                        const SizedBox(height: 20),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Cor do Evento:'),
+                            GestureDetector(
+                              onTap: () => _selectColor(context, eventState),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: formEventState.color,
+                                ),
+                                width: 50,
+                                height: 50,
+                              ),
+                            ),
+                          ],
+                        ),
                         const SizedBox(height: 20),
                         // Botão de envio
                         SizedBox(
                           width: double.infinity,
-                          child: FilledButton(
-                            style: FilledButton.styleFrom(
-                                backgroundColor: Colors.blue),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                eventState.addEvent(formEventState);
-
-                                Navigator.pop(context);
-                              }
-                            },
-                            child: const Text('Salvar'),
+                          child: ButtonLoading(
+                            onPressed: () async => await submitEvent(
+                                context, eventState, formEventState),
+                            isBusy: eventState.formEventIsBusy,
                           ),
                         ),
                       ],

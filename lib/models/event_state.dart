@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:marine/database/database.dart';
 import 'package:marine/database/utils.database.dart';
 
 class EventState {
