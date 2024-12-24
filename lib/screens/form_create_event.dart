@@ -317,8 +317,17 @@ class _ModalBottomCreateEventState extends State<ModalBottomCreateEvent> {
                         SizedBox(
                           width: double.infinity,
                           child: ButtonLoading(
-                            onPressed: () async => await submitEvent(
-                                context, eventState, formEventState),
+                            onPressed: () async {
+                              await submitEvent(
+                                  context, eventState, formEventState);
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                          Text('Evento excluído com sucesso')),
+                                );
+                              }
+                            },
                             isBusy: eventState.formEventIsBusy,
                           ),
                         ),

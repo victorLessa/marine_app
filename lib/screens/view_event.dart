@@ -35,6 +35,42 @@ class _ViewEventState extends State<ViewEvent> {
     return result;
   }
 
+  popupMenuButtonAction(String action) async {
+    switch (action) {
+      case "update":
+        Navigator.of(context).pop();
+        await showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(20),
+            ),
+          ),
+          builder: (BuildContext context) {
+            return ModalBottomCreateEvent(
+              isEdit: true,
+              eventId: widget.eventId,
+            );
+          },
+        );
+
+        break;
+      case "delete":
+        final eventProvider =
+            Provider.of<EventProvider>(context, listen: false);
+        await eventProvider.removeEvent(widget.eventId);
+        if (mounted) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Evento excluído com sucesso')),
+          );
+        }
+        break;
+      default:
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
@@ -61,9 +97,6 @@ class _ViewEventState extends State<ViewEvent> {
                 child: Text('Evento não encontrado'),
               );
             } else {
-              EventState event = snapshot.data!;
-              final eventState =
-                  Provider.of<EventProvider>(context, listen: false);
               final formEventState =
                   Provider.of<EventProvider>(context, listen: false)
                       .formEventState;
@@ -108,29 +141,21 @@ class _ViewEventState extends State<ViewEvent> {
                           ),
                           SizedBox(
                             width: 50,
-                            child: InkWell(
-                              child: const Text("Editar"),
-                              onTap: () async {
-                                Navigator.of(context).pop();
-                                await showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled:
-                                      true, // Permite que o modal ocupe o espaço necessário
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(20),
-                                    ),
-                                  ),
-                                  builder: (BuildContext context) {
-                                    return ModalBottomCreateEvent(
-                                      isEdit: true,
-                                      eventId: event.id,
-                                    );
-                                  },
-                                );
-
-                                eventState.cleanFormEvent();
+                            child: PopupMenuButton(
+                              onSelected: (String item) {
+                                popupMenuButtonAction(item);
                               },
+                              itemBuilder: (BuildContext context) =>
+                                  <PopupMenuEntry<String>>[
+                                const PopupMenuItem<String>(
+                                  value: 'update',
+                                  child: Text('Editar'),
+                                ),
+                                const PopupMenuItem<String>(
+                                  value: "delete",
+                                  child: Text('Excluir'),
+                                ),
+                              ],
                             ),
                           )
                         ],

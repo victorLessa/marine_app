@@ -43,7 +43,7 @@ class _CalendarEventsState extends State<CalendarEvents>
           List<EventState> events = whereEvent(eventProvider.eventList, value);
           if (events.isNotEmpty) {
             return Padding(
-              padding: const EdgeInsets.only(left: 5, right: 5),
+              padding: const EdgeInsets.only(left: 5, bottom: 10, right: 5),
               child:
                   Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Container(

@@ -109,21 +109,10 @@ class EventProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void removeEvent(
-    DateTime day,
-    int index,
-  ) {
-    int? event = _eventList.indexWhere((event) {
-      if (day.isAfter(event.startDay) && day.isBefore(event.endDay)) {
-        return true;
-      }
-      return false;
-    });
-
-    if (!event.isNaN) {
-      _eventList.removeRange(index, index);
-      notifyListeners();
-    }
+  Future<void> removeEvent(int eventId) async {
+    _eventRepository.deleteEvent(eventId);
+    await loadEvents();
+    notifyListeners();
   }
 
   cleanFormEvent() {
