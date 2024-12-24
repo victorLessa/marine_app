@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marine/providers/event_provider.dart';
-import 'package:marine/screens/form_create_event.dart';
+import 'package:marine/screens/form_event.dart';
 import 'package:marine/widgets/calendar_events.dart';
 import 'package:marine/widgets/custom_view.dart';
 import 'package:marine/widgets/legend.dart';
@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             builder: (BuildContext context) {
-              return const ModalBottomCreateEvent();
+              return const ModalBottomFormEvent();
             },
           );
 

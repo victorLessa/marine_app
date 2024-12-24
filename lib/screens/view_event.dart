@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:marine/models/event_state.dart';
 import 'package:marine/providers/event_provider.dart';
-import 'package:marine/screens/form_create_event.dart';
+import 'package:marine/screens/form_event.dart';
 import 'package:provider/provider.dart';
 
 class ViewEvent extends StatefulWidget {
@@ -48,7 +48,7 @@ class _ViewEventState extends State<ViewEvent> {
             ),
           ),
           builder: (BuildContext context) {
-            return ModalBottomCreateEvent(
+            return ModalBottomFormEvent(
               isEdit: true,
               eventId: widget.eventId,
             );

@@ -8,17 +8,17 @@ import 'package:marine/widgets/timer_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-class ModalBottomCreateEvent extends StatefulWidget {
+class ModalBottomFormEvent extends StatefulWidget {
   final bool isEdit;
   final int? eventId;
 
-  const ModalBottomCreateEvent({super.key, this.isEdit = false, this.eventId});
+  const ModalBottomFormEvent({super.key, this.isEdit = false, this.eventId});
 
   @override
-  State<ModalBottomCreateEvent> createState() => _ModalBottomCreateEventState();
+  State<ModalBottomFormEvent> createState() => _ModalBottomFormEventState();
 }
 
-class _ModalBottomCreateEventState extends State<ModalBottomCreateEvent> {
+class _ModalBottomFormEventState extends State<ModalBottomFormEvent> {
   bool allDay = false;
   late TimeOfDay? selectedTime;
   Orientation? orientation;
@@ -202,13 +202,16 @@ class _ModalBottomCreateEventState extends State<ModalBottomCreateEvent> {
                                     onTap: () async {
                                       DateTime? dateTime = await showDatePicker(
                                         context: context,
-                                        initialDate:
-                                            calendarProvider.selectedDay,
+                                        initialDate: formEventState.startDay,
                                         firstDate: DateTime(1900),
                                         lastDate: DateTime(2099),
                                         locale: const Locale('pt', 'BR'),
                                       );
 
+                                      if (dateTime!
+                                          .isAfter(formEventState.endDay)) {
+                                        eventState.setEndDay(dateTime);
+                                      }
                                       eventState.setStartDay(dateTime);
                                     },
                                   ),
@@ -248,9 +251,8 @@ class _ModalBottomCreateEventState extends State<ModalBottomCreateEvent> {
                                     onTap: () async {
                                       DateTime? dateTime = await showDatePicker(
                                         context: context,
-                                        initialDate:
-                                            calendarProvider.selectedDay,
-                                        firstDate: DateTime(1900),
+                                        initialDate: formEventState.endDay,
+                                        firstDate: formEventState.startDay,
                                         lastDate: DateTime(2099),
                                         locale: const Locale('pt', 'BR'),
                                       );
