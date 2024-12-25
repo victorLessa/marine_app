@@ -7,7 +7,7 @@ class EventState {
   Color color;
   String description;
   DateTime startDay;
-  bool? allDay;
+  bool allDay;
   DateTime endDay;
   TimeOfDay startHour;
   TimeOfDay endHour;
@@ -27,8 +27,9 @@ class EventState {
     return {
       'title': title,
       'description': description,
-      'startDay': startDay.toIso8601String(),
-      'endDay': endDay.toIso8601String(),
+      'startDay': startDay.microsecondsSinceEpoch,
+      'endDay': endDay.microsecondsSinceEpoch,
+      'allDay': allDay ? 1 : 0,
       'startHour': UtilsDatabase.timeOfDayToString(startHour),
       'endHour': UtilsDatabase.timeOfDayToString(endHour),
       'color': color.value,
@@ -40,8 +41,9 @@ class EventState {
       id: map['id'],
       title: map['title'],
       description: map['description'],
-      startDay: DateTime.parse(map['startDay']),
-      endDay: DateTime.parse(map['endDay']),
+      allDay: map['allDay'] == 1 ? true : false,
+      startDay: DateTime.fromMicrosecondsSinceEpoch(map['startDay']),
+      endDay: DateTime.fromMicrosecondsSinceEpoch(map['endDay']),
       startHour: UtilsDatabase.stringToTimeOfDay(map['startHour']),
       endHour: UtilsDatabase.stringToTimeOfDay(map['endHour']),
       color: Color(map['color']),

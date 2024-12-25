@@ -18,8 +18,8 @@ class CalendarProvider with ChangeNotifier {
 
   void addSelectedDay(BuildContext context, DateTime day) {
     _selectedDay = day;
-    EventProvider eventProvider =
-        Provider.of<EventProvider>(context, listen: false);
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
+
     eventProvider.setEndDay(day);
     eventProvider.setStartDay(day);
 

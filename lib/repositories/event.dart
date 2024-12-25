@@ -19,6 +19,18 @@ class EventRepository {
     return result;
   }
 
+  Future<List<EventState>> findByDate(DateTime date) async {
+    final db = await DatabaseHelper().database;
+    List<Map<String, dynamic>> maps = await db.query('events',
+        where: 'startDay <= ? and endDay >= ?',
+        whereArgs: [date.microsecondsSinceEpoch, date.microsecondsSinceEpoch]);
+    List<EventState> result = List.generate(maps.length, (i) {
+      return EventState.fromMap(maps[i]);
+    });
+
+    return result;
+  }
+
   Future<EventState> findById(int id) async {
     final db = await DatabaseHelper().database;
     final List<Map<String, dynamic>> maps =
@@ -31,6 +43,23 @@ class EventRepository {
     await db
         .update('events', event.toMap(), where: 'id = ?', whereArgs: [eventId]);
     return event;
+  }
+
+  Future<List<EventState>> findByMonth(DateTime date) async {
+    final db = await DatabaseHelper().database;
+    final int startMonth =
+        DateTime(date.year, date.month, 1).microsecondsSinceEpoch;
+    final int endMonth =
+        DateTime(date.year, date.month + 1, 0).microsecondsSinceEpoch;
+    List<Map<String, dynamic>> maps = await db.query('events',
+        where: 'startDay >= ? and endDay <= ?',
+        whereArgs: [startMonth, endMonth]);
+
+    List<EventState> result = List.generate(maps.length, (i) {
+      return EventState.fromMap(maps[i]);
+    });
+
+    return result;
   }
 
   Future<void> deleteEvent(int id) async {

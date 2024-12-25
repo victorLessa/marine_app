@@ -22,7 +22,7 @@ class DatabaseHelper {
       version: 1,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE events(id INTEGER PRIMARY KEY, title TEXT, description TEXT, startDay TEXT, endDay TEXT, startHour TEXT, endHour TEXT, color INTEGER)',
+          'CREATE TABLE events(id INTEGER PRIMARY KEY, title TEXT, description TEXT, allDay INTEGER, startDay INTEGER, endDay INTEGER, startHour TEXT, endHour TEXT, color INTEGER)',
         );
       },
     );

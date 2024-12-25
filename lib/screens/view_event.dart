@@ -5,6 +5,8 @@ import 'package:marine/providers/event_provider.dart';
 import 'package:marine/screens/form_event.dart';
 import 'package:provider/provider.dart';
 
+enum EventAction { update, delete }
+
 class ViewEvent extends StatefulWidget {
   final int eventId;
   const ViewEvent({super.key, required this.eventId});
@@ -35,9 +37,9 @@ class _ViewEventState extends State<ViewEvent> {
     return result;
   }
 
-  popupMenuButtonAction(String action) async {
+  popupMenuButtonAction(EventAction action) async {
     switch (action) {
-      case "update":
+      case EventAction.update:
         Navigator.of(context).pop();
         await showModalBottomSheet(
           context: context,
@@ -56,7 +58,7 @@ class _ViewEventState extends State<ViewEvent> {
         );
 
         break;
-      case "delete":
+      case EventAction.delete:
         final eventProvider =
             Provider.of<EventProvider>(context, listen: false);
         await eventProvider.removeEvent(widget.eventId);
@@ -142,17 +144,17 @@ class _ViewEventState extends State<ViewEvent> {
                           SizedBox(
                             width: 50,
                             child: PopupMenuButton(
-                              onSelected: (String item) {
+                              onSelected: (EventAction item) {
                                 popupMenuButtonAction(item);
                               },
                               itemBuilder: (BuildContext context) =>
-                                  <PopupMenuEntry<String>>[
-                                const PopupMenuItem<String>(
-                                  value: 'update',
+                                  <PopupMenuEntry<EventAction>>[
+                                const PopupMenuItem<EventAction>(
+                                  value: EventAction.update,
                                   child: Text('Editar'),
                                 ),
-                                const PopupMenuItem<String>(
-                                  value: "delete",
+                                const PopupMenuItem<EventAction>(
+                                  value: EventAction.delete,
                                   child: Text('Excluir'),
                                 ),
                               ],

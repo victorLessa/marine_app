@@ -6,16 +6,7 @@ import 'package:marine/models/form_event_state.dart';
 import 'package:marine/repositories/event.dart';
 
 class EventProvider with ChangeNotifier {
-  final List<EventState> _eventList = [
-    EventState(
-        title: "Evento 1",
-        description: "",
-        endDay: DateTime.now(),
-        startDay: DateTime.now(),
-        startHour: TimeOfDay.now(),
-        endHour: TimeOfDay.now(),
-        color: Colors.blue),
-  ];
+  final List<EventState> _eventList = [];
 
   bool formEventIsBusy = false;
 
@@ -34,6 +25,16 @@ class EventProvider with ChangeNotifier {
 
   Future<EventState> findEventById(int id) async {
     EventState result = await _eventRepository.findById(id);
+    return result;
+  }
+
+  Future<List<EventState>> findEventByDate(DateTime date) async {
+    List<EventState> result = await _eventRepository.findByDate(date);
+    return result;
+  }
+
+  Future<List<EventState>> findEventByMonth(DateTime date) async {
+    List<EventState> result = await _eventRepository.findByMonth(date);
     return result;
   }
 
@@ -73,20 +74,22 @@ class EventProvider with ChangeNotifier {
 
   void setStartDay(DateTime? value) {
     if (value != null) {
-      _formEventState.startDay = value;
+      // Precisa salvar como UTC pq na hora se selecionar a data no table datepicker ele retorna o valor em UTC sem a hora
+      _formEventState.startDay = value.toUtc();
       notifyListeners();
     }
   }
 
   void setEndDay(DateTime? value) {
     if (value != null) {
-      _formEventState.endDay = value;
+      // Precisa salvar como UTC pq na hora se selecionar a data no table datepicker ele retorna o valor em UTC sem a hora
+      _formEventState.endDay = value.toUtc();
       notifyListeners();
     }
   }
 
-  void setAllDay(bool? value) {
-    _formEventState.allDay = value ?? false;
+  void setAllDay(bool value) {
+    _formEventState.allDay = value;
 
     notifyListeners();
   }
@@ -96,7 +99,6 @@ class EventProvider with ChangeNotifier {
 
     cleanFormEvent();
 
-    await loadEvents();
     notifyListeners();
   }
 
@@ -105,13 +107,12 @@ class EventProvider with ChangeNotifier {
 
     cleanFormEvent();
 
-    await loadEvents();
     notifyListeners();
   }
 
   Future<void> removeEvent(int eventId) async {
     _eventRepository.deleteEvent(eventId);
-    await loadEvents();
+
     notifyListeners();
   }
 
