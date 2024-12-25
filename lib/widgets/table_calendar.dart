@@ -44,56 +44,53 @@ class _CalendarPageState extends State<Calendar> {
         FutureBuilder(
           future: _eventsFuture,
           builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return SnackBar(content: Text('Erro: ${snapshot.error}'));
-            } else {
-              final events = snapshot.data!;
-              return TableCalendar(
-                locale: 'pt_BR',
-                firstDay: DateTime.utc(2000, 1, 1), // Primeiro dia possível
-                lastDay: DateTime.utc(2100, 12, 31), // Último dia possível
-                focusedDay: calendarProvider.focusedDay.value,
-                calendarFormat:
-                    CalendarFormat.month, // Formato inicial do calendário
-                selectedDayPredicate: (day) =>
-                    isSameDay(calendarProvider.selectedDay, day),
-                eventLoader: (DateTime day) => whereEvent(events, day),
-                onDaySelected: (selectedDay, focusedDay) {
-                  calendarProvider.addSelectedDay(context, selectedDay);
+            final events = snapshot.data ?? [];
 
-                  calendarProvider.addFocusedDay(focusedDay);
+            return TableCalendar(
+              locale: 'pt_BR',
+              firstDay: DateTime.utc(2000, 1, 1), // Primeiro dia possível
+              lastDay: DateTime.utc(2100, 12, 31), // Último dia possível
+              focusedDay: calendarProvider.focusedDay.value,
+              calendarFormat:
+                  CalendarFormat.month, // Formato inicial do calendário
+              selectedDayPredicate: (day) =>
+                  isSameDay(calendarProvider.selectedDay, day),
+              eventLoader: (DateTime day) => whereEvent(events, day),
+              onDaySelected: (selectedDay, focusedDay) {
+                calendarProvider.addSelectedDay(context, selectedDay);
+
+                calendarProvider.addFocusedDay(focusedDay);
+              },
+              calendarBuilders: CalendarBuilders(
+                todayBuilder: (context, date, focusedDay) =>
+                    dayBuilder(todayColor, context, date, focusedDay),
+                selectedBuilder: (context, date, focusedDay) =>
+                    dayBuilder(selectedColor, context, date, focusedDay),
+                markerBuilder: (context, day, List<EventState> events) {
+                  if (events.isNotEmpty) {
+                    return Positioned(
+                      bottom: 10, // Ajusta a posição das bolinhas
+                      child: _buildEventsMarker(day, events),
+                    );
+                  }
+                  return null;
                 },
-                calendarBuilders: CalendarBuilders(
-                  todayBuilder: (context, day, focusedDay) =>
-                      dayBuilder(todayColor, context, day, focusedDay),
-                  selectedBuilder: (context, day, focusedDay) =>
-                      dayBuilder(selectedColor, context, day, focusedDay),
-                  markerBuilder: (context, day, List<EventState> events) {
-                    if (events.isNotEmpty) {
-                      return Positioned(
-                        bottom: 10, // Ajusta a posição das bolinhas
-                        child: _buildEventsMarker(day, events),
-                      );
-                    }
-                    return null;
-                  },
-                ),
-                headerStyle: const HeaderStyle(
-                  formatButtonVisible: false, // Oculta botão de alterar formato
-                  titleCentered: true, // Centraliza o título
-                ),
-                calendarStyle: const CalendarStyle(
-                  weekendTextStyle: TextStyle(color: Colors.red),
-                ),
-              );
-            }
+              ),
+              headerStyle: const HeaderStyle(
+                formatButtonVisible: false, // Oculta botão de alterar formato
+                titleCentered: true, // Centraliza o título
+              ),
+              calendarStyle: const CalendarStyle(
+                weekendTextStyle: TextStyle(color: Colors.red),
+              ),
+            );
           },
         ),
       ]);
     });
   }
 
-  Widget dayBuilder(Color color, context, day, focusedDay) {
+  Widget dayBuilder(Color color, context, date, focusedDay) {
     return Container(
       margin: const EdgeInsets.all(3.0),
       alignment: Alignment.center,
@@ -102,7 +99,7 @@ class _CalendarPageState extends State<Calendar> {
         shape: BoxShape.circle,
       ),
       child: Text(
-        '${day.day}',
+        '${date.day}',
         style: const TextStyle(color: Colors.white), // Cor do texto
       ),
     );
