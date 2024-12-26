@@ -20,10 +20,30 @@ class DatabaseHelper {
     return await openDatabase(
       path,
       version: 1,
-      onCreate: (db, version) {
-        return db.execute(
-          'CREATE TABLE events(id INTEGER PRIMARY KEY, title TEXT, description TEXT, allDay INTEGER, startDay INTEGER, endDay INTEGER, startHour TEXT, endHour TEXT, color INTEGER)',
-        );
+      onCreate: (db, version) async {
+        await db.execute('''
+            CREATE TABLE events(
+            id INTEGER PRIMARY KEY, 
+            title TEXT, 
+            description TEXT, 
+            allDay INTEGER, 
+            startDay INTEGER, 
+            endDay INTEGER, 
+            startHour TEXT, 
+            endHour TEXT, 
+            color INTEGER);
+            
+            ''');
+
+        await db.execute('''
+            CREATE TABLE work_schedule(
+            id INTEGER PRIMARY KEY,
+            schedule TEXT,
+            boardingDay INTEGER,
+            preBoardingMeeting INTEGER
+            );
+            
+            ''');
       },
     );
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
-import 'screens/agendamento_screen.dart';
+import 'screens/work_schedule_screen.dart';
 import 'screens/radar_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const HomeScreen(),
-        '/agendamento': (context) => const AgendamentoScreen(),
+        '/escala': (context) => const EscalaScreen(),
         '/radar': (context) => const RadarScreen(),
       },
     );

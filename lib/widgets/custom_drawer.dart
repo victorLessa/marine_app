@@ -21,16 +21,15 @@ class CustomDrawer extends StatelessWidget {
           }),
           ListTile(
             title: const Text('Inicio'),
-            onTap: () => Navigator.pushReplacementNamed(context, '/'),
+            onTap: () => Navigator.pushNamed(context, '/'),
           ),
           ListTile(
-            title: const Text('Agendamento'),
-            onTap: () =>
-                Navigator.pushReplacementNamed(context, '/agendamento'),
+            title: const Text('Escala'),
+            onTap: () => Navigator.pushNamed(context, '/escala'),
           ),
           ListTile(
             title: const Text('Radar'),
-            onTap: () => Navigator.pushReplacementNamed(context, '/radar'),
+            onTap: () => Navigator.pushNamed(context, '/radar'),
           ),
         ],
       ),

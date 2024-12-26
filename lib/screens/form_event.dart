@@ -204,7 +204,7 @@ class _ModalBottomFormEventState extends State<ModalBottomFormEvent> {
                                         context: context,
                                         initialDate: formEventState.startDay,
                                         firstDate: DateTime(1900),
-                                        lastDate: DateTime(2099),
+                                        lastDate: formEventState.endDay,
                                         locale: const Locale('pt', 'BR'),
                                       );
 

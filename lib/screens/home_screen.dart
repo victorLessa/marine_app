@@ -43,20 +43,40 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       drawer: const CustomDrawer(),
-      body: const Column(
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Center(
             child: Column(
               children: [
-                Text(
-                  'Jornada de trabalho: 28/28',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: () {
+                    Navigator.pushNamed(context, '/escala');
+                  },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Jornada de trabalho: 28/28',
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Icon(
+                        Icons.edit_calendar,
+                        size: 16,
+                      ),
+                    ],
+                  ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Legend(
@@ -70,11 +90,11 @@ class HomeScreen extends StatelessWidget {
                         color: Color.fromARGB(255, 122, 208, 255)),
                   ],
                 ),
-                Calendar(),
+                const Calendar(),
               ],
             ),
           ),
-          Expanded(child: CalendarEvents()),
+          const Expanded(child: CalendarEvents()),
         ],
       ),
     );
