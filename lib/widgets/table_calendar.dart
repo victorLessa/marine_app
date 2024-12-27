@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:marine/models/event_state.dart';
 import 'package:marine/providers/calendar_provider.dart';
@@ -16,36 +17,30 @@ class Calendar extends StatefulWidget {
 class _CalendarPageState extends State<Calendar> {
   final Color todayColor = const Color.fromARGB(255, 0, 156, 208);
   final Color selectedColor = const Color.fromARGB(255, 123, 148, 164);
-  late Future<List<EventState>> _eventsFuture;
 
   @override
   void initState() {
     super.initState();
-    _eventsFuture = _loadEvents();
   }
 
   Future<List<EventState>> _loadEvents() async {
     final calendarProvider =
         Provider.of<CalendarProvider>(context, listen: false);
     final eventProvider = Provider.of<EventProvider>(context, listen: false);
-    final result =
-        await eventProvider.findEventByMonth(calendarProvider.focusedDay.value);
-
-    return result;
+    return await eventProvider
+        .findEventByMonth(calendarProvider.focusedDay.value);
   }
 
   @override
   Widget build(BuildContext context) {
-    final calendarProvider = Provider.of<CalendarProvider>(context);
-
     return Consumer<EventProvider>(
         builder: (BuildContext context, eventState, child) {
-      return Column(children: [
-        FutureBuilder(
-          future: _eventsFuture,
-          builder: (context, snapshot) {
+      final calendarProvider =
+          Provider.of<CalendarProvider>(context, listen: false);
+      return FutureBuilder(
+          future: _loadEvents(),
+          builder: (context, AsyncSnapshot<List<EventState>> snapshot) {
             final events = snapshot.data ?? [];
-
             return TableCalendar(
               locale: 'pt_BR',
               firstDay: DateTime.utc(2000, 1, 1), // Primeiro dia possível
@@ -56,6 +51,7 @@ class _CalendarPageState extends State<Calendar> {
               selectedDayPredicate: (day) =>
                   isSameDay(calendarProvider.selectedDay, day),
               eventLoader: (DateTime day) => whereEvent(events, day),
+              currentDay: DateTime.now(),
               onDaySelected: (selectedDay, focusedDay) {
                 calendarProvider.addSelectedDay(context, selectedDay);
 
@@ -84,9 +80,7 @@ class _CalendarPageState extends State<Calendar> {
                 weekendTextStyle: TextStyle(color: Colors.red),
               ),
             );
-          },
-        ),
-      ]);
+          });
     });
   }
 

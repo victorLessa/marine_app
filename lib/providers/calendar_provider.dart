@@ -22,7 +22,11 @@ class CalendarProvider with ChangeNotifier {
 
     eventProvider.setEndDay(day);
     eventProvider.setStartDay(day);
-
     notifyListeners();
+  }
+
+  @override
+  void notifyListeners() {
+    super.notifyListeners();
   }
 }

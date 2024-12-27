@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:marine/models/event_state.dart';
-import 'package:marine/models/form_event_state.dart';
+import 'package:marine/providers/calendar_provider.dart';
 import 'package:marine/repositories/event.dart';
+import 'package:provider/provider.dart';
 
 class EventProvider with ChangeNotifier {
   bool formEventIsBusy = false;
 
-  late FormEventState _formEventState = FormEventState();
+  List<EventState> eventList = [];
+
+  late EventState _formEventState = EventState();
 
   final EventRepository _eventRepository = EventRepository();
 
-  FormEventState get formEventState => _formEventState;
+  EventState get formEventState => _formEventState;
+
+  void setFormEventState(EventState data) {
+    _formEventState = data;
+  }
 
   Future<EventState> findEventById(int id) async {
     EventState result = await _eventRepository.findById(id);
@@ -24,6 +31,7 @@ class EventProvider with ChangeNotifier {
 
   Future<List<EventState>> findEventByMonth(DateTime date) async {
     List<EventState> result = await _eventRepository.findByMonth(date);
+
     return result;
   }
 
@@ -64,7 +72,7 @@ class EventProvider with ChangeNotifier {
   void setStartDay(DateTime? value) {
     if (value != null) {
       // Precisa salvar como UTC pq na hora se selecionar a data no table datepicker ele retorna o valor em UTC sem a hora
-      _formEventState.startDay = value.toUtc();
+      _formEventState.startDay = value;
       notifyListeners();
     }
   }
@@ -72,7 +80,7 @@ class EventProvider with ChangeNotifier {
   void setEndDay(DateTime? value) {
     if (value != null) {
       // Precisa salvar como UTC pq na hora se selecionar a data no table datepicker ele retorna o valor em UTC sem a hora
-      _formEventState.endDay = value.toUtc();
+      _formEventState.endDay = value;
       notifyListeners();
     }
   }
@@ -83,29 +91,52 @@ class EventProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addEvent(FormEventState eventData) async {
-    await _eventRepository.insertEvent(eventData.toEventState());
+  Future<void> addEvent(context, EventState eventData) async {
+    try {
+      formEventIsBusy = true;
+      await _eventRepository.insertEvent(eventData);
 
-    cleanFormEvent();
+      final calendarProvider =
+          Provider.of<CalendarProvider>(context, listen: false);
+      await findEventByMonth(calendarProvider.focusedDay.value);
 
-    notifyListeners();
+      notifyListeners();
+      cleanFormEvent();
+    } finally {
+      formEventIsBusy = false;
+    }
   }
 
-  Future<void> editEvent(int eventId, FormEventState eventData) async {
-    await _eventRepository.updateEvent(eventId, eventData.toEventState());
+  Future<void> editEvent(context, int eventId, EventState eventData) async {
+    try {
+      formEventIsBusy = true;
+      await _eventRepository.updateEvent(eventId, eventData);
 
-    cleanFormEvent();
+      final calendarProvider =
+          Provider.of<CalendarProvider>(context, listen: false);
+      await findEventByMonth(calendarProvider.focusedDay.value);
 
-    notifyListeners();
+      cleanFormEvent();
+
+      notifyListeners();
+    } finally {
+      formEventIsBusy = false;
+    }
   }
 
   Future<void> removeEvent(int eventId) async {
-    _eventRepository.deleteEvent(eventId);
+    try {
+      formEventIsBusy = true;
+      await _eventRepository.deleteEvent(eventId);
 
-    notifyListeners();
+      cleanFormEvent();
+      notifyListeners();
+    } finally {
+      formEventIsBusy = false;
+    }
   }
 
   cleanFormEvent() {
-    _formEventState = FormEventState();
+    _formEventState = EventState();
   }
 }

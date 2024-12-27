@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:marine/extensions/datetime.dart';
 import 'package:marine/models/event_state.dart';
 import 'package:marine/providers/calendar_provider.dart';
 import 'package:marine/providers/event_provider.dart';
@@ -26,24 +27,13 @@ class _CalendarEventsState extends State<CalendarEvents>
   Future<void> openViewEvent(context, int? eventId) async {
     if (eventId == null) return;
 
-    await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true, // Permite que o modal ocupe o espaço necessário
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ViewEvent(
+          eventId: eventId,
         ),
       ),
-      builder: (BuildContext context) {
-        return ViewEvent(
-          eventId: eventId,
-        );
-      },
     );
-
-    final eventProvider = Provider.of<EventProvider>(context, listen: false);
-
-    eventProvider.cleanFormEvent();
   }
 
   @override
@@ -90,7 +80,8 @@ class _CalendarEventsState extends State<CalendarEvents>
                         left: 10,
                       ),
                       child: FutureBuilder(
-                        future: eventProvider.findEventByDate(value),
+                        future:
+                            eventProvider.findEventByDate(value.toDateOnly()),
                         builder: (BuildContext context,
                             AsyncSnapshot<List<EventState>> snapshot) {
                           if (snapshot.connectionState ==
@@ -113,44 +104,42 @@ class _CalendarEventsState extends State<CalendarEvents>
                           return ListView.builder(
                             itemCount: events.length,
                             itemBuilder: (context, index) {
-                              return InkWell(
-                                onTap: () async => await openViewEvent(
-                                    context, events[index].id),
-                                child: Column(
-                                  children: [
-                                    index > 0 ? const Divider() : Container(),
-                                    Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: events[index].color,
-                                        ),
-                                        borderRadius: BorderRadius.circular(5),
+                              return Column(children: [
+                                index > 0 ? const Divider() : Container(),
+                                InkWell(
+                                  onTap: () async => await openViewEvent(
+                                      context, events[index].id),
+                                  child: Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: events[index].color,
                                       ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              events[index].title,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                              ),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            events[index].title.text,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
                                             ),
-                                            events[index].allDay
-                                                ? const Text("Dia inteiro")
-                                                : Text(
-                                                    '${events[index].startHour.format(context)} - ${events[index].endHour.format(context)}',
-                                                  ),
-                                          ],
-                                        ),
+                                          ),
+                                          events[index].allDay
+                                              ? const Text("Dia inteiro")
+                                              : Text(
+                                                  '${events[index].startHour.format(context)} - ${events[index].endHour.format(context)}',
+                                                ),
+                                        ],
                                       ),
-                                    )
-                                  ],
-                                ),
-                              );
+                                    ),
+                                  ),
+                                )
+                              ]);
                             },
                           );
                         },

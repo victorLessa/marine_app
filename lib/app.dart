@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marine/screens/form_event.dart';
 import 'screens/home_screen.dart';
 import 'screens/work_schedule_screen.dart';
 import 'screens/radar_screen.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const HomeScreen(),
         '/escala': (context) => const EscalaScreen(),
         '/radar': (context) => const RadarScreen(),
+        '/formEvent': (context) => const FormEvent(),
       },
     );
   }

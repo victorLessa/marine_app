@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:marine/providers/event_provider.dart';
 import 'package:marine/screens/form_event.dart';
-import 'package:marine/widgets/calendar_events.dart';
+import 'package:marine/widgets/list_view_events.dart';
 import 'package:marine/widgets/custom_view.dart';
 import 'package:marine/widgets/legend.dart';
 import 'package:marine/widgets/table_calendar.dart';
-import 'package:provider/provider.dart';
 import '../widgets/custom_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -13,34 +11,21 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    EventProvider eventProvider = Provider.of<EventProvider>(context);
+    // EventProvider eventProvider = Provider.of<EventProvider>(context);
     return CustomView(
       appBar: AppBar(
         title: const Text('Inicio'),
       ),
-      floatingActionButton: FloatingActionButton.small(
-        onPressed: () async {
-          await showModalBottomSheet(
-            context: context,
-            isScrollControlled:
-                true, // Permite que o modal ocupe o espaço necessário
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(20),
-              ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const FormEvent(),
             ),
-            builder: (BuildContext context) {
-              return const ModalBottomFormEvent();
-            },
           );
-
-          eventProvider.cleanFormEvent();
         },
-        backgroundColor: const Color.fromARGB(255, 0, 156, 208),
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
       ),
       drawer: const CustomDrawer(),
       body: Column(

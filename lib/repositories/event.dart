@@ -4,9 +4,13 @@ import 'package:sqflite/sqflite.dart';
 
 class EventRepository {
   Future<void> insertEvent(EventState event) async {
-    final db = await DatabaseHelper().database;
-    await db.insert('events', event.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    try {
+      final db = await DatabaseHelper().database;
+      await db.insert('events', event.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    } catch (e) {
+      throw Exception("Erro ao criar evento. Erro: $e");
+    }
   }
 
   Future<List<EventState>> getEvents() async {
@@ -39,10 +43,14 @@ class EventRepository {
   }
 
   Future<EventState> updateEvent(int eventId, EventState event) async {
-    final db = await DatabaseHelper().database;
-    await db
-        .update('events', event.toMap(), where: 'id = ?', whereArgs: [eventId]);
-    return event;
+    try {
+      final db = await DatabaseHelper().database;
+      await db.update('events', event.toMap(),
+          where: 'id = ?', whereArgs: [eventId]);
+      return event;
+    } catch (e) {
+      throw Exception("Erro ao atualizar evento Erro: $e");
+    }
   }
 
   Future<List<EventState>> findByMonth(DateTime date) async {
@@ -63,7 +71,11 @@ class EventRepository {
   }
 
   Future<void> deleteEvent(int id) async {
-    final db = await DatabaseHelper().database;
-    await db.delete('events', where: 'id = ?', whereArgs: [id]);
+    try {
+      final db = await DatabaseHelper().database;
+      await db.delete('events', where: 'id = ?', whereArgs: [id]);
+    } catch (e) {
+      throw Exception("Erro ao apagar evento. Erro: $e");
+    }
   }
 }
