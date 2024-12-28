@@ -9,12 +9,14 @@ class EventState {
   TextEditingController description;
   DateTime startDay;
   bool allDay;
+  bool embarked;
   DateTime endDay;
   TimeOfDay startHour;
   TimeOfDay endHour;
 
   EventState({
     this.id,
+    bool? embarked,
     TextEditingController? title,
     TextEditingController? description,
     bool? allDay,
@@ -30,6 +32,7 @@ class EventState {
         startDay = startDay ?? DateTime.now(),
         endDay = endDay ?? DateTime.now(),
         color = color ?? Colors.blue,
+        embarked = embarked ?? false,
         allDay = allDay ?? true;
 
   Map<String, dynamic> toMap() {
@@ -40,6 +43,7 @@ class EventState {
       'startDay': startDay.toDateOnly().microsecondsSinceEpoch,
       'endDay': endDay.toDateOnly().microsecondsSinceEpoch,
       'allDay': allDay ? 1 : 0,
+      "embarked": embarked ? 1 : 0,
       'startHour': UtilsDatabase.timeOfDayToString(startHour),
       'endHour': UtilsDatabase.timeOfDayToString(endHour),
       'color': color.value,
@@ -52,6 +56,7 @@ class EventState {
       title: TextEditingController(text: map['title']),
       description: TextEditingController(text: map['description']),
       allDay: map['allDay'] == 1 ? true : false,
+      embarked: map['embarked'] == 1 ? true : false,
       startDay: DateTime.fromMicrosecondsSinceEpoch(map['startDay']),
       endDay: DateTime.fromMicrosecondsSinceEpoch(map['endDay']),
       startHour: UtilsDatabase.stringToTimeOfDay(map['startHour']),

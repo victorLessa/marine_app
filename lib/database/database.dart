@@ -29,7 +29,8 @@ class DatabaseHelper {
             description TEXT, 
             allDay INTEGER, 
             startDay INTEGER, 
-            endDay INTEGER, 
+            endDay INTEGER,
+            embarked INTEGER,
             startHour TEXT, 
             endHour TEXT, 
             color INTEGER);
@@ -41,6 +42,7 @@ class DatabaseHelper {
             id INTEGER PRIMARY KEY,
             schedule TEXT,
             boardingDay INTEGER,
+            years INTEGER,
             preBoardingMeeting INTEGER
             );
             

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:marine/models/event_state.dart';
 import 'package:marine/providers/calendar_provider.dart';
@@ -27,16 +26,14 @@ class _CalendarPageState extends State<Calendar> {
     final calendarProvider =
         Provider.of<CalendarProvider>(context, listen: false);
     final eventProvider = Provider.of<EventProvider>(context, listen: false);
-    return await eventProvider
-        .findEventByMonth(calendarProvider.focusedDay.value);
+    return await eventProvider.findEventByMonth(calendarProvider.focusedDay);
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<EventProvider>(
         builder: (BuildContext context, eventState, child) {
-      final calendarProvider =
-          Provider.of<CalendarProvider>(context, listen: false);
+      final calendarProvider = Provider.of<CalendarProvider>(context);
       return FutureBuilder(
           future: _loadEvents(),
           builder: (context, AsyncSnapshot<List<EventState>> snapshot) {
@@ -45,7 +42,7 @@ class _CalendarPageState extends State<Calendar> {
               locale: 'pt_BR',
               firstDay: DateTime.utc(2000, 1, 1), // Primeiro dia possível
               lastDay: DateTime.utc(2100, 12, 31), // Último dia possível
-              focusedDay: calendarProvider.focusedDay.value,
+              focusedDay: calendarProvider.focusedDay,
               calendarFormat:
                   CalendarFormat.month, // Formato inicial do calendário
               selectedDayPredicate: (day) =>
@@ -57,6 +54,7 @@ class _CalendarPageState extends State<Calendar> {
 
                 calendarProvider.addFocusedDay(focusedDay);
               },
+
               calendarBuilders: CalendarBuilders(
                 todayBuilder: (context, date, focusedDay) =>
                     dayBuilder(todayColor, context, date, focusedDay),
@@ -64,10 +62,11 @@ class _CalendarPageState extends State<Calendar> {
                     dayBuilder(selectedColor, context, date, focusedDay),
                 markerBuilder: (context, day, List<EventState> events) {
                   if (events.isNotEmpty) {
-                    return Positioned(
-                      bottom: 10, // Ajusta a posição das bolinhas
-                      child: _buildEventsMarker(day, events),
-                    );
+                    // return Positioned(
+                    //   bottom: 10, // Ajusta a posição das bolinhas
+                    //   child: _buildEventsMarker(day, events),
+                    // );
+                    return _buildEventsMarker(day, events);
                   }
                   return null;
                 },
@@ -100,6 +99,42 @@ class _CalendarPageState extends State<Calendar> {
   }
 
   Widget _buildEventsMarker(DateTime date, List<EventState> events) {
+    int hasEmbarked = events.indexWhere((EventState event) => event.embarked);
+    if (hasEmbarked != -1) {
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            margin: const EdgeInsets.all(3.0),
+            decoration:
+                const BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+          ),
+          Center(
+            child: Text('${date.day}'),
+          ),
+          Positioned(
+            bottom: 10.0,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: events.take(3).map((event) {
+                Color color = (event as EventState?)?.color ?? Colors.grey;
+
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: color, // Você pode personalizar a cor
+                  ),
+                );
+              }).toList(),
+            ),
+          )
+        ],
+      );
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: events.take(3).map((event) {

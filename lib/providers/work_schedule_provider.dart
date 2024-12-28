@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:marine/models/event_state.dart';
 import 'package:marine/models/work_schedule_state.dart';
+import 'package:marine/providers/event_provider.dart';
 import 'package:marine/repositories/work_schedule.dart';
+import 'package:provider/provider.dart';
 
 class WorkScheduleProvider with ChangeNotifier {
-  final List<String> workScheduleOPtions = ['14/14', '28/28', 'Personalizar'];
-  final WorkScheduleState _workScheduleState = WorkScheduleState();
+  final List<String> workScheduleOptions = ['14/14', '28/28', 'Personalizar'];
+  late WorkScheduleState _workScheduleState = WorkScheduleState(
+      schedule: TextEditingController(text: workScheduleOptions.first));
   final WorkScheduleRepository _workScheduleRepository =
       WorkScheduleRepository();
   int leftSchedule = 0;
   int rightSchedule = 0;
+
+  late EventProvider _eventProvider;
 
   bool isBusy = false;
 
@@ -24,6 +30,16 @@ class WorkScheduleProvider with ChangeNotifier {
 
   String get workSchedule {
     return "$leftSchedule/$rightSchedule";
+  }
+
+  void setEventProvider(EventProvider eventProvider) {
+    _eventProvider = eventProvider;
+  }
+
+  void setFormWorkSchedule(WorkScheduleState? data) {
+    if (data != null) {
+      _workScheduleState = data;
+    }
   }
 
   void setBoardingDay(DateTime date) {
@@ -51,13 +67,84 @@ class WorkScheduleProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<WorkScheduleState?> getWorkSchedule() async {
+    return await _workScheduleRepository.getWorkSchedule();
+  }
+
+  Future<List<EventState>?> generateDaysOnBoard(WorkScheduleState data) async {
+    await _eventProvider.deleteEmbarked();
+
+    int years = int.parse(data.years.text);
+    List<String> scale = data.schedule.text.split('/');
+    DateTime? boardingDay = data.boardingDay;
+    bool preBoardingMeeting = data.preBoardingMeeting;
+    if (boardingDay == null) return [];
+
+    DateTime lastDate = DateTime(
+      boardingDay.year + years,
+      boardingDay.month,
+      boardingDay.day,
+    );
+
+    // Obter o número de dias
+    int daysOn = int.parse(scale[0]);
+    int daysOff = int.parse(scale[1]);
+    List<EventState> events = [];
+
+    DateTime currentDate = boardingDay;
+    while (currentDate.isBefore(lastDate)) {
+      if (preBoardingMeeting) {
+        await _eventProvider.addEvent(EventState(
+          title: TextEditingController(text: 'Reunião pré Embarque'),
+          startDay: currentDate.subtract(const Duration(days: 1)),
+          color: Colors.orange,
+          embarked: true,
+          endDay: currentDate.subtract(const Duration(days: 1)),
+          allDay: true,
+        ));
+      }
+      await _eventProvider.addEvent(EventState(
+        title: TextEditingController(text: 'Embarcado'),
+        startDay: currentDate,
+        color: Colors.red,
+        embarked: true,
+        endDay: currentDate.add(Duration(days: daysOn - 1)),
+        allDay: true,
+      ));
+      await _eventProvider.addEvent(EventState(
+        title: TextEditingController(text: 'Desembarque'),
+        startDay: currentDate.add(Duration(days: daysOn)),
+        color: Colors.blue,
+        embarked: true,
+        endDay: currentDate.add(Duration(days: daysOn)),
+        allDay: true,
+      ));
+
+      currentDate = currentDate.add(Duration(days: daysOn));
+      currentDate = currentDate.add(Duration(days: daysOff));
+    }
+
+    return events;
+  }
+
   Future<void> addWorkSchedule(WorkScheduleState data) async {
     try {
       isBusy = true;
-      await _workScheduleRepository.createWorkSchedule(data);
       notifyListeners();
+      final existingSchedule = await getWorkSchedule();
+      int? workScheduleId = existingSchedule?.id;
+
+      if (existingSchedule != null && workScheduleId != null) {
+        await _workScheduleRepository.updateWorkSchedule(workScheduleId, data);
+
+        if (existingSchedule != data) await generateDaysOnBoard(data);
+      } else {
+        await _workScheduleRepository.createWorkSchedule(data);
+        await generateDaysOnBoard(data);
+      }
     } finally {
       isBusy = false;
+      notifyListeners();
     }
   }
 }

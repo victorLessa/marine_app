@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:marine/models/work_schedule_state.dart';
 import 'package:marine/providers/work_schedule_provider.dart';
 import 'package:marine/widgets/button_loading.dart';
 import 'package:marine/widgets/custom_view.dart';
@@ -93,8 +94,27 @@ class _EscalaScreenState extends State<EscalaScreen> {
     );
   }
 
+  Future<void> submit(WorkScheduleProvider workScheduleProvider) async {
+    if (_formController.currentState!.validate()) {
+      try {
+        await workScheduleProvider
+            .addWorkSchedule(workScheduleProvider.workScheduleState);
+        if (mounted) {
+          snackSuccess(context, 'Escala ataulizada com sucesso!');
+          Navigator.of(context).pop();
+        }
+      } catch (e) {
+        if (mounted) {
+          snackError(context, 'Erro: ${e.toString()}');
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final workScheduleProvider =
+        Provider.of<WorkScheduleProvider>(context, listen: false);
     return CustomView(
       appBar: AppBar(
         centerTitle: true,
@@ -106,127 +126,141 @@ class _EscalaScreenState extends State<EscalaScreen> {
           ),
         ),
       ),
-      body: Consumer<WorkScheduleProvider>(
-        builder: (BuildContext context, workScheduleProvider, child) {
-          return Column(
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Form(
-                key: _formController,
-                child: Column(
-                  children: [
-                    DropdownMenu<String>(
-                      width: double.infinity,
-                      label: const Text('Selecione data de embarque'),
-                      initialSelection:
-                          workScheduleProvider.workScheduleOPtions.first,
-                      controller:
-                          workScheduleProvider.workScheduleState.schedule,
-                      onSelected: (String? value) async {
-                        if (value == "Personalizar") {
-                          _showCustomScale(context);
-                        }
-                      },
-                      dropdownMenuEntries: UnmodifiableListView<MenuEntry>(
-                        workScheduleProvider.workScheduleOPtions.map<MenuEntry>(
-                            (String name) =>
-                                MenuEntry(value: name, label: name)),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      readOnly: true,
-                      controller: TextEditingController(
-                        text: workScheduleProvider.getBoardingDayString,
-                      ),
-                      decoration: const InputDecoration(
-                        labelText: 'Selecione data de embarque',
-                        border: OutlineInputBorder(),
-                        suffixIcon: Icon(Icons.calendar_today),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Campo obrigatório';
-                        }
-                        return null;
-                      },
-                      onTap: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2101),
-                        );
-                        if (pickedDate != null) {
-                          workScheduleProvider.setBoardingDay(pickedDate);
-                        }
-                      },
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    InkWell(
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      child: Transform.translate(
-                        offset: const Offset(-14, 0),
-                        child: Row(
-                          children: [
-                            Checkbox(
-                              activeColor: Colors.blue,
-                              checkColor: Colors.white,
-                              value: workScheduleProvider
-                                  .workScheduleState.preBoardingMeeting,
-                              onChanged: (bool? value) {
-                                workScheduleProvider
-                                    .setPreBoardingMeeting(value!);
-                              },
-                            ),
-                            const Text("Reunião de Embarque"),
-                          ],
-                        ),
-                      ),
-                      onTap: () {
-                        bool result = !workScheduleProvider
-                            .workScheduleState.preBoardingMeeting;
-
-                        workScheduleProvider.setPreBoardingMeeting(result);
-                      },
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ButtonLoading(
-                          onPressed: () async {
-                            if (_formController.currentState!.validate()) {
-                              try {
-                                await workScheduleProvider.addWorkSchedule(
-                                    workScheduleProvider.workScheduleState);
-                                if (context.mounted) {
-                                  snackSuccess(context,
-                                      'Escala ataulizada com sucesso!');
-                                  Navigator.of(context).pop();
-                                }
-                              } catch (e) {
-                                if (context.mounted) {
-                                  snackError(context, 'Erro: ${e.toString()}');
-                                }
-                              }
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          FutureBuilder(
+            future: workScheduleProvider.getWorkSchedule(),
+            builder: (BuildContext context,
+                AsyncSnapshot<WorkScheduleState?> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('Erro: ${snapshot.error}'),
+                );
+              } else {
+                final form = snapshot.data;
+                workScheduleProvider.setFormWorkSchedule(form);
+                return Consumer<WorkScheduleProvider>(builder:
+                    (BuildContext context, workScheduleProvider, child) {
+                  final workScheduleState =
+                      workScheduleProvider.workScheduleState;
+                  return Form(
+                    key: _formController,
+                    child: Column(
+                      children: [
+                        DropdownMenu<String>(
+                          width: double.infinity,
+                          label: const Text('Selecione data de embarque'),
+                          initialSelection: workScheduleState.schedule.text,
+                          controller: workScheduleState.schedule,
+                          onSelected: (String? value) async {
+                            if (value == "Personalizar") {
+                              _showCustomScale(context);
                             }
                           },
-                          isBusy: workScheduleProvider.isBusy),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
+                          dropdownMenuEntries: UnmodifiableListView<MenuEntry>(
+                            workScheduleProvider.workScheduleOptions
+                                .map<MenuEntry>((String name) =>
+                                    MenuEntry(value: name, label: name)),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
+                          readOnly: true,
+                          controller: TextEditingController(
+                            text: workScheduleProvider.getBoardingDayString,
+                          ),
+                          decoration: const InputDecoration(
+                            labelText: 'Selecione data de embarque',
+                            border: OutlineInputBorder(),
+                            suffixIcon: Icon(Icons.calendar_today),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Campo obrigatório';
+                            }
+                            return null;
+                          },
+                          onTap: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              currentDate: workScheduleState.boardingDay,
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2101),
+                            );
+                            if (pickedDate != null) {
+                              workScheduleProvider.setBoardingDay(pickedDate);
+                            }
+                          },
+                        ),
+                        Container(
+                          height: 20,
+                        ),
+                        DropdownMenu<String>(
+                          width: double.infinity,
+                          label: const Text('Gerar por quantos anos?'),
+                          initialSelection: workScheduleState.years.text,
+                          controller: workScheduleState.years,
+                          dropdownMenuEntries: UnmodifiableListView<MenuEntry>(
+                            ['1', '2', '3'].map<MenuEntry>((String name) =>
+                                MenuEntry(value: name, label: name)),
+                          ),
+                        ),
+                        Container(
+                          height: 5,
+                        ),
+                        InkWell(
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          child: Transform.translate(
+                            offset: const Offset(-14, 0),
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                  activeColor: Colors.blue,
+                                  checkColor: Colors.white,
+                                  value: workScheduleState.preBoardingMeeting,
+                                  onChanged: (bool? value) {
+                                    workScheduleProvider
+                                        .setPreBoardingMeeting(value!);
+                                  },
+                                ),
+                                const Text("Reunião de Embarque"),
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            bool result = !workScheduleState.preBoardingMeeting;
+
+                            workScheduleProvider.setPreBoardingMeeting(result);
+                          },
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ButtonLoading(
+                              onPressed: () async =>
+                                  await submit(workScheduleProvider),
+                              isBusy: workScheduleProvider.isBusy),
+                        )
+                      ],
+                    ),
+                  );
+                });
+              }
+            },
+          ),
+        ],
       ),
     );
   }

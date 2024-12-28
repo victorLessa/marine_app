@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marine/models/event_state.dart';
-import 'package:marine/providers/calendar_provider.dart';
 import 'package:marine/repositories/event.dart';
-import 'package:provider/provider.dart';
 
 class EventProvider with ChangeNotifier {
   bool formEventIsBusy = false;
@@ -91,30 +89,22 @@ class EventProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addEvent(context, EventState eventData) async {
+  Future<void> addEvent(EventState eventData) async {
     try {
       formEventIsBusy = true;
       await _eventRepository.insertEvent(eventData);
 
-      final calendarProvider =
-          Provider.of<CalendarProvider>(context, listen: false);
-      await findEventByMonth(calendarProvider.focusedDay.value);
-
-      notifyListeners();
       cleanFormEvent();
     } finally {
       formEventIsBusy = false;
+      notifyListeners();
     }
   }
 
-  Future<void> editEvent(context, int eventId, EventState eventData) async {
+  Future<void> editEvent(int eventId, EventState eventData) async {
     try {
       formEventIsBusy = true;
       await _eventRepository.updateEvent(eventId, eventData);
-
-      final calendarProvider =
-          Provider.of<CalendarProvider>(context, listen: false);
-      await findEventByMonth(calendarProvider.focusedDay.value);
 
       cleanFormEvent();
 
@@ -130,13 +120,19 @@ class EventProvider with ChangeNotifier {
       await _eventRepository.deleteEvent(eventId);
 
       cleanFormEvent();
-      notifyListeners();
     } finally {
       formEventIsBusy = false;
+      notifyListeners();
     }
+  }
+
+  Future<void> deleteEmbarked() async {
+    await _eventRepository.deleteEmbarked();
+    notifyListeners();
   }
 
   cleanFormEvent() {
     _formEventState = EventState();
+    notifyListeners();
   }
 }

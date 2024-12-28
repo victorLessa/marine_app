@@ -3,16 +3,16 @@ import 'package:marine/providers/event_provider.dart';
 import 'package:provider/provider.dart';
 
 class CalendarProvider with ChangeNotifier {
-  final ValueNotifier<DateTime> _focusedDay = ValueNotifier(DateTime.now());
+  DateTime _focusedDay = DateTime.now();
 
   DateTime _selectedDay = DateTime.now();
 
-  ValueNotifier<DateTime> get focusedDay => _focusedDay;
+  DateTime get focusedDay => _focusedDay;
 
   DateTime get selectedDay => _selectedDay;
 
   void addFocusedDay(DateTime day) {
-    _focusedDay.value = day;
+    _focusedDay = day;
     notifyListeners();
   }
 

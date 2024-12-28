@@ -8,11 +8,11 @@ class WorkScheduleRepository {
   WorkScheduleRepository();
 
   // Method to fetch all work schedules
-  Future<WorkScheduleState?> getAllWorkSchedule() async {
+  Future<WorkScheduleState?> getWorkSchedule() async {
     // Implement your logic to fetch work schedules
     final db = await DatabaseHelper().database;
     final List<Map<String, dynamic>> maps =
-        await db.rawQuery('select * from work_schedule');
+        await db.rawQuery('select * from work_schedule where id not null');
 
     if (maps.isNotEmpty) {
       return WorkScheduleState.fromMap(maps.first);
@@ -44,18 +44,11 @@ class WorkScheduleRepository {
   Future<void> createWorkSchedule(WorkScheduleState workSchedule) async {
     try {
       final db = await DatabaseHelper().database;
-      final existingSchedule = await getAllWorkSchedule();
-
-      if (existingSchedule != null) {
-        int id = existingSchedule.id!;
-        await updateWorkSchedule(id, workSchedule);
-      } else {
-        await db.insert(
-          'work_schedule',
-          workSchedule.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-      }
+      await db.insert(
+        'work_schedule',
+        workSchedule.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
     } catch (e) {
       throw Exception('Erro ao criar escala Erro: $e');
     }

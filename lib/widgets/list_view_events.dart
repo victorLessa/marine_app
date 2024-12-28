@@ -41,115 +41,111 @@ class _CalendarEventsState extends State<CalendarEvents>
     return Consumer<CalendarProvider>(
       builder: (context, calendarState, child) {
         EventProvider eventProvider = Provider.of<EventProvider>(context);
-        return ValueListenableBuilder<DateTime>(
-          valueListenable: calendarState.focusedDay,
-          builder: (context, value, _) {
-            String day = value.day.toString();
-            String dayOfWeek = DateFormat.E('pt_BR').format(value);
 
-            return Padding(
-              padding: const EdgeInsets.only(left: 5, bottom: 10, right: 5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        String day = calendarState.focusedDay.day.toString();
+        String dayOfWeek =
+            DateFormat.E('pt_BR').format(calendarState.focusedDay);
+
+        return Padding(
+          padding: const EdgeInsets.only(left: 5, bottom: 10, right: 5),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
                 children: [
-                  Column(
-                    children: [
-                      Text(dayOfWeek),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Container(
-                        height: 45,
-                        width: 45,
-                        alignment: Alignment.center,
-                        margin: const EdgeInsets.only(left: 0),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color.fromARGB(255, 123, 148, 164),
-                        ),
-                        child: Text(
-                          day,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
+                  Text(dayOfWeek),
+                  const SizedBox(
+                    height: 5,
                   ),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.only(
-                        left: 10,
-                      ),
-                      child: FutureBuilder(
-                        future:
-                            eventProvider.findEventByDate(value.toDateOnly()),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<List<EventState>> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          } else if (snapshot.hasError) {
-                            return const Center(
-                              child: Text('Erro ao carregar os eventos'),
-                            );
-                          } else if (snapshot.data!.isEmpty) {
-                            return const Center(
-                              child: Text('Nenhum evento encontrado'),
-                            );
-                          }
-
-                          List<EventState> events = snapshot.data!;
-
-                          return ListView.builder(
-                            itemCount: events.length,
-                            itemBuilder: (context, index) {
-                              return Column(children: [
-                                index > 0 ? const Divider() : Container(),
-                                InkWell(
-                                  onTap: () async => await openViewEvent(
-                                      context, events[index].id),
-                                  child: Container(
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: events[index].color,
-                                      ),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            events[index].title.text,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                          events[index].allDay
-                                              ? const Text("Dia inteiro")
-                                              : Text(
-                                                  '${events[index].startHour.format(context)} - ${events[index].endHour.format(context)}',
-                                                ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ]);
-                            },
-                          );
-                        },
-                      ),
+                  Container(
+                    height: 45,
+                    width: 45,
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(left: 0),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color.fromARGB(255, 123, 148, 164),
                     ),
-                  )
+                    child: Text(
+                      day,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ],
               ),
-            );
-          },
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.only(
+                    left: 10,
+                  ),
+                  child: FutureBuilder(
+                    future: eventProvider
+                        .findEventByDate(calendarState.focusedDay.toDateOnly()),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<EventState>> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return const Center(
+                          child: Text('Erro ao carregar os eventos'),
+                        );
+                      } else if (snapshot.data!.isEmpty) {
+                        return const Center(
+                          child: Text('Nenhum evento encontrado'),
+                        );
+                      }
+
+                      List<EventState> events = snapshot.data!;
+
+                      return ListView.builder(
+                        itemCount: events.length,
+                        itemBuilder: (context, index) {
+                          return Column(children: [
+                            index > 0 ? const Divider() : Container(),
+                            InkWell(
+                              onTap: () async => await openViewEvent(
+                                  context, events[index].id),
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: events[index].color,
+                                  ),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        events[index].title.text,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      events[index].allDay
+                                          ? const Text("Dia inteiro")
+                                          : Text(
+                                              '${events[index].startHour.format(context)} - ${events[index].endHour.format(context)}',
+                                            ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          ]);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              )
+            ],
+          ),
         );
       },
     );

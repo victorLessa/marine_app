@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:marine/providers/work_schedule_provider.dart';
 import 'package:marine/screens/form_event.dart';
 import 'package:marine/widgets/list_view_events.dart';
 import 'package:marine/widgets/custom_view.dart';
 import 'package:marine/widgets/legend.dart';
 import 'package:marine/widgets/table_calendar.dart';
+import 'package:provider/provider.dart';
 import '../widgets/custom_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -11,7 +13,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // EventProvider eventProvider = Provider.of<EventProvider>(context);
     return CustomView(
       appBar: AppBar(
         title: const Text('Inicio'),
@@ -40,18 +41,21 @@ class HomeScreen extends StatelessWidget {
                   onTap: () {
                     Navigator.pushNamed(context, '/escala');
                   },
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Jornada de trabalho: 28/28',
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(
+                      Consumer<WorkScheduleProvider>(
+                          builder: (context, workScheduleProvider, _) {
+                        return Text(
+                          'Jornada de trabalho: ${workScheduleProvider.workScheduleState.schedule.text}',
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w600),
+                        );
+                      }),
+                      Container(
                         width: 5,
                       ),
-                      Icon(
+                      const Icon(
                         Icons.edit_calendar,
                         size: 16,
                       ),

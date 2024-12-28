@@ -1,4 +1,5 @@
 import 'package:marine/database/database.dart';
+import 'package:marine/extensions/datetime.dart';
 import 'package:marine/models/event_state.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -55,13 +56,10 @@ class EventRepository {
 
   Future<List<EventState>> findByMonth(DateTime date) async {
     final db = await DatabaseHelper().database;
-    final int startMonth =
-        DateTime(date.year, date.month, 1).microsecondsSinceEpoch;
-    final int endMonth =
-        DateTime(date.year, date.month + 1, 0).microsecondsSinceEpoch;
-    List<Map<String, dynamic>> maps = await db.query('events',
-        where: 'startDay >= ? and endDay <= ?',
-        whereArgs: [startMonth, endMonth]);
+
+    List<Map<String, dynamic>> maps = await db.query(
+      'events',
+    );
 
     List<EventState> result = List.generate(maps.length, (i) {
       return EventState.fromMap(maps[i]);
@@ -77,5 +75,10 @@ class EventRepository {
     } catch (e) {
       throw Exception("Erro ao apagar evento. Erro: $e");
     }
+  }
+
+  Future<void> deleteEmbarked() async {
+    final db = await DatabaseHelper().database;
+    await db.delete('events', where: 'embarked = ?', whereArgs: [1]);
   }
 }

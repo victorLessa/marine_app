@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:marine/models/event_state.dart';
+import 'package:marine/providers/calendar_provider.dart';
 import 'package:marine/providers/event_provider.dart';
 import 'package:marine/widgets/button_loading.dart';
 import 'package:marine/widgets/custom_view.dart';
@@ -32,6 +33,14 @@ class _FormEventState extends State<FormEvent> {
   void initState() {
     super.initState();
     selectedTime = TimeOfDay.now();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final eventProvider = Provider.of<EventProvider>(context, listen: false);
+      DateTime focusDay =
+          Provider.of<CalendarProvider>(context, listen: false).focusedDay;
+      eventProvider.setStartDay(focusDay);
+      eventProvider.setEndDay(focusDay);
+    });
   }
 
   void _selectColor(BuildContext context, EventProvider eventProvider) {
@@ -72,10 +81,9 @@ class _FormEventState extends State<FormEvent> {
     if (_formKey.currentState!.validate()) {
       try {
         if (widget.eventId != null) {
-          await eventState.editEvent(
-              context, widget.eventId as int, formEventState);
+          await eventState.editEvent(widget.eventId as int, formEventState);
         } else {
-          await eventState.addEvent(context, formEventState);
+          await eventState.addEvent(formEventState);
         }
         if (context.mounted) {
           snackSuccess(context, 'Evento salvo com sucesso');
