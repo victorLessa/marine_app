@@ -34,62 +34,71 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       drawer: const CustomDrawer(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Center(
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverToBoxAdapter(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                InkWell(
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  onTap: () {
-                    Navigator.pushNamed(context, '/escala');
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                Center(
+                  child: Column(
                     children: [
-                      Consumer<WorkScheduleProvider>(
-                          builder: (context, workScheduleProvider, _) {
-                        return Text(
-                          'Jornada de trabalho: ${workScheduleProvider.workScheduleState.schedule.text}',
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w600),
-                        );
-                      }),
-                      Container(
-                        width: 5,
+                      InkWell(
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        onTap: () {
+                          Navigator.pushNamed(context, '/escala');
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Consumer<WorkScheduleProvider>(
+                                builder: (context, workScheduleProvider, _) {
+                              return Text(
+                                'Jornada de trabalho: ${workScheduleProvider.workScheduleState.schedule.text}',
+                                style: const TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w600),
+                              );
+                            }),
+                            Container(
+                              width: 5,
+                            ),
+                            const Icon(
+                              Icons.edit_calendar,
+                              size: 16,
+                            ),
+                          ],
+                        ),
                       ),
-                      const Icon(
-                        Icons.edit_calendar,
-                        size: 16,
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Legend(title: 'Embarcado', color: AppColors.embarked),
+                          Legend(
+                              title: 'Reunião pré embarque',
+                              color: AppColors.preBoardingMeeting),
+                          Legend(
+                              title: 'Desembarque',
+                              color: AppColors.desembarkationDay),
+                        ],
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(
+                const Calendar(),
+                Container(
                   height: 10,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Legend(title: 'Embarcado', color: AppColors.embarked),
-                    Legend(
-                        title: 'Reunião pré embarque',
-                        color: AppColors.preBoardingMeeting),
-                    Legend(
-                        title: 'Desembarque',
-                        color: AppColors.desembarkationDay),
-                  ],
-                ),
-                const Calendar(),
+                // const SizedBox(height: 400, child: CalendarEvents())
               ],
             ),
           ),
-          Container(
-            height: 20,
+          const SliverFillRemaining(
+            child: CalendarEvents(),
           ),
-          const Expanded(child: CalendarEvents()),
         ],
       ),
     );

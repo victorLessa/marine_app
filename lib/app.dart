@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:marine/screens/form_event.dart';
 import 'screens/home_screen.dart';
@@ -34,6 +36,8 @@ class MyApp extends StatelessWidget {
           labelSmall: TextStyle(fontSize: 12.0),
         ),
       ),
+      scrollBehavior: const MaterialScrollBehavior()
+          .copyWith(dragDevices: PointerDeviceKind.values.toSet()),
       initialRoute: '/',
       routes: {
         '/': (context) => const HomeScreen(),
