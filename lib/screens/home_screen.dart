@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marine/providers/work_schedule_provider.dart';
 import 'package:marine/screens/form_event.dart';
+import 'package:marine/styles/app_style.dart';
 import 'package:marine/widgets/list_view_events.dart';
 import 'package:marine/widgets/custom_view.dart';
 import 'package:marine/widgets/legend.dart';
@@ -18,7 +19,7 @@ class HomeScreen extends StatelessWidget {
         title: const Text('Inicio'),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        backgroundColor: Colors.lightBlue,
         onPressed: () {
           Navigator.push(
             context,
@@ -27,6 +28,10 @@ class HomeScreen extends StatelessWidget {
             ),
           );
         },
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
       drawer: const CustomDrawer(),
       body: Column(
@@ -65,23 +70,24 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Legend(
-                        title: 'Embarcado',
-                        color: Color.fromRGBO(214, 0, 0, 1)),
+                    Legend(title: 'Embarcado', color: AppColors.embarked),
                     Legend(
                         title: 'Reunião pré embarque',
-                        color: Color.fromARGB(255, 0, 156, 208)),
+                        color: AppColors.preBoardingMeeting),
                     Legend(
                         title: 'Desembarque',
-                        color: Color.fromARGB(255, 122, 208, 255)),
+                        color: AppColors.desembarkationDay),
                   ],
                 ),
                 const Calendar(),
               ],
             ),
+          ),
+          Container(
+            height: 20,
           ),
           const Expanded(child: CalendarEvents()),
         ],

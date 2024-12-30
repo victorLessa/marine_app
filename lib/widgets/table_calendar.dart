@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:marine/extensions/datetime.dart';
 import 'package:marine/models/event_state.dart';
 import 'package:marine/providers/calendar_provider.dart';
 import 'package:marine/providers/event_provider.dart';
+import 'package:marine/styles/app_style.dart';
 import 'package:marine/widgets/utils_calendar.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -14,9 +16,6 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<Calendar> {
-  final Color todayColor = const Color.fromARGB(255, 0, 156, 208);
-  final Color selectedColor = const Color.fromARGB(255, 123, 148, 164);
-
   @override
   void initState() {
     super.initState();
@@ -57,16 +56,12 @@ class _CalendarPageState extends State<Calendar> {
 
               calendarBuilders: CalendarBuilders(
                 todayBuilder: (context, date, focusedDay) =>
-                    dayBuilder(todayColor, context, date, focusedDay),
+                    dayBuilder(AppColors.todayColor, context, date),
                 selectedBuilder: (context, date, focusedDay) =>
-                    dayBuilder(selectedColor, context, date, focusedDay),
+                    dayBuilder(AppColors.selectedColor, context, date),
                 markerBuilder: (context, day, List<EventState> events) {
                   if (events.isNotEmpty) {
-                    // return Positioned(
-                    //   bottom: 10, // Ajusta a posição das bolinhas
-                    //   child: _buildEventsMarker(day, events),
-                    // );
-                    return _buildEventsMarker(day, events);
+                    return _buildEventsMarker(day, events, calendarProvider);
                   }
                   return null;
                 },
@@ -83,7 +78,7 @@ class _CalendarPageState extends State<Calendar> {
     });
   }
 
-  Widget dayBuilder(Color color, context, date, focusedDay) {
+  Widget dayBuilder(Color color, context, date) {
     return Container(
       margin: const EdgeInsets.all(3.0),
       alignment: Alignment.center,
@@ -98,26 +93,40 @@ class _CalendarPageState extends State<Calendar> {
     );
   }
 
-  Widget _buildEventsMarker(DateTime date, List<EventState> events) {
-    int hasEmbarked = events.indexWhere((EventState event) => event.embarked);
-    if (hasEmbarked != -1) {
+  Widget _buildEventsMarker(DateTime date, List<EventState> events,
+      CalendarProvider calendarProvider) {
+    DateTime focusedDay = calendarProvider.focusedDay;
+
+    if (focusedDay.isAtSameMomentAs(date)) {
+      return dayBuilder(AppColors.selectedColor, context, date);
+    } else if (date.isAtSameMomentAs(DateTime.now().toDateOnly())) {
+      return dayBuilder(AppColors.todayColor, context, date);
+    }
+
+    int embarkedIndex = events.indexWhere((EventState event) => event.embarked);
+    if (embarkedIndex != -1) {
       return Stack(
         alignment: Alignment.center,
         children: [
           Container(
             margin: const EdgeInsets.all(3.0),
-            decoration:
-                const BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: events[embarkedIndex].color),
+            ),
           ),
           Center(
-            child: Text('${date.day}'),
+            child: Text(
+              '${date.day}',
+            ),
           ),
           Positioned(
             bottom: 10.0,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: events.take(3).map((event) {
+              children:
+                  events.take(3).where((event) => !event.embarked).map((event) {
                 Color color = (event as EventState?)?.color ?? Colors.grey;
 
                 return Container(
@@ -135,21 +144,24 @@ class _CalendarPageState extends State<Calendar> {
         ],
       );
     }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: events.take(3).map((event) {
-        Color color = (event as EventState?)?.color ?? Colors.grey;
+    return Positioned(
+      bottom: 8.0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: events.take(3).map((event) {
+          Color color = (event as EventState?)?.color ?? Colors.grey;
 
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 1.5),
-          width: 6,
-          height: 6,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color, // Você pode personalizar a cor
-          ),
-        );
-      }).toList(),
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 1.5),
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color, // Você pode personalizar a cor
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 }

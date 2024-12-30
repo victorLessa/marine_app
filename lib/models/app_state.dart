@@ -4,5 +4,5 @@ class AppState {
   String userName;
   WorkScheduleState? workScheduleState;
 
-  AppState({this.userName = 'Victor Camara', this.workScheduleState});
+  AppState({this.userName = 'N/A', this.workScheduleState});
 }

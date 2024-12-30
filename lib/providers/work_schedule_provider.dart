@@ -4,6 +4,7 @@ import 'package:marine/models/event_state.dart';
 import 'package:marine/models/work_schedule_state.dart';
 import 'package:marine/providers/event_provider.dart';
 import 'package:marine/repositories/work_schedule.dart';
+import 'package:marine/styles/app_style.dart';
 import 'package:provider/provider.dart';
 
 class WorkScheduleProvider with ChangeNotifier {
@@ -97,7 +98,7 @@ class WorkScheduleProvider with ChangeNotifier {
         await _eventProvider.addEvent(EventState(
           title: TextEditingController(text: 'Reunião pré Embarque'),
           startDay: currentDate.subtract(const Duration(days: 1)),
-          color: Colors.orange,
+          color: AppColors.preBoardingMeeting,
           embarked: true,
           endDay: currentDate.subtract(const Duration(days: 1)),
           allDay: true,
@@ -106,7 +107,7 @@ class WorkScheduleProvider with ChangeNotifier {
       await _eventProvider.addEvent(EventState(
         title: TextEditingController(text: 'Embarcado'),
         startDay: currentDate,
-        color: Colors.red,
+        color: AppColors.embarked,
         embarked: true,
         endDay: currentDate.add(Duration(days: daysOn - 1)),
         allDay: true,
@@ -114,7 +115,7 @@ class WorkScheduleProvider with ChangeNotifier {
       await _eventProvider.addEvent(EventState(
         title: TextEditingController(text: 'Desembarque'),
         startDay: currentDate.add(Duration(days: daysOn)),
-        color: Colors.blue,
+        color: AppColors.desembarkationDay,
         embarked: true,
         endDay: currentDate.add(Duration(days: daysOn)),
         allDay: true,
