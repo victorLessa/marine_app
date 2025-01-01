@@ -101,6 +101,7 @@ class _FormEventState extends State<FormEvent> {
   Widget build(BuildContext context) {
     final eventProvider = Provider.of<EventProvider>(context, listen: false);
     return CustomView(
+        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 20),
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Evento'),
@@ -290,6 +291,8 @@ class _FormEventState extends State<FormEvent> {
                 // Campo de texto 2
                 TextFormField(
                   controller: state.description,
+                  minLines: 1,
+                  maxLines: 10,
                   decoration: const InputDecoration(
                     labelText: 'Descrição (Opcional)',
                     border: OutlineInputBorder(),

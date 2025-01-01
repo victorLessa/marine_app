@@ -5,11 +5,13 @@ class CustomView extends StatefulWidget {
   final Widget? drawer;
   final Widget body;
   final Widget? floatingActionButton;
+  final EdgeInsetsGeometry? padding;
 
   const CustomView({
     super.key,
     this.appBar,
     this.drawer,
+    this.padding,
     required this.body,
     this.floatingActionButton,
   });
@@ -36,7 +38,8 @@ class _CustomViewState extends State<CustomView> {
           )),
         ),
         body: Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15),
+            padding:
+                widget.padding ?? const EdgeInsets.only(left: 10, right: 10),
             child: widget.body));
   }
 }
