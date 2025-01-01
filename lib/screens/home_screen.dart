@@ -17,8 +17,50 @@ class HomeScreen extends StatelessWidget {
     return CustomView(
       appBar: AppBar(
         title: const Text('Inicio'),
+        centerTitle: true,
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FormEvent(),
+                ),
+              );
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Consumer<WorkScheduleProvider>(
+                    builder: (context, workScheduleProvider, _) {
+                  return Text(
+                    'Escala: ${workScheduleProvider.workScheduleState.schedule.text}',
+                    style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600),
+                  );
+                }),
+                Container(
+                  width: 5,
+                ),
+                const Icon(
+                  Icons.edit_calendar,
+                  size: 16,
+                  color: Colors.black,
+                ),
+              ],
+            ),
+          )
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
+        label:
+            const Text('Criar evento', style: TextStyle(color: Colors.white)),
+        icon: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         backgroundColor: Colors.lightBlue,
         onPressed: () {
           Navigator.push(
@@ -28,71 +70,41 @@ class HomeScreen extends StatelessWidget {
             ),
           );
         },
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
       ),
       drawer: const CustomDrawer(),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverToBoxAdapter(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Center(
-                  child: Column(
-                    children: [
-                      InkWell(
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        onTap: () {
-                          Navigator.pushNamed(context, '/escala');
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                const Calendar(),
+                const SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      children: [
+                        Row(
                           children: [
-                            Consumer<WorkScheduleProvider>(
-                                builder: (context, workScheduleProvider, _) {
-                              return Text(
-                                'Jornada de trabalho: ${workScheduleProvider.workScheduleState.schedule.text}',
-                                style: const TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w600),
-                              );
-                            }),
-                            Container(
-                              width: 5,
+                            Legend(
+                                title: 'Embarcado', color: AppColors.embarked),
+                            const SizedBox(
+                              width: 10,
                             ),
-                            const Icon(
-                              Icons.edit_calendar,
-                              size: 16,
-                            ),
+                            Legend(
+                                title: 'Reunião pré embarque',
+                                color: AppColors.preBoardingMeeting),
                           ],
                         ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Legend(title: 'Embarcado', color: AppColors.embarked),
-                          Legend(
-                              title: 'Reunião pré embarque',
-                              color: AppColors.preBoardingMeeting),
-                          Legend(
-                              title: 'Desembarque',
-                              color: AppColors.desembarkationDay),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const Calendar(),
-                Container(
-                  height: 10,
-                ),
-                // const SizedBox(height: 400, child: CalendarEvents())
+                        Legend(
+                            title: 'Desembarque',
+                            color: AppColors.desembarkationDay),
+                      ],
+                    ),
+                  ],
+                )
               ],
             ),
           ),

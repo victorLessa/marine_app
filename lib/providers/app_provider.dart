@@ -4,7 +4,7 @@ import 'package:marine/repositories/user.dart';
 import '../models/app_state.dart';
 
 class AppProvider with ChangeNotifier {
-  final AppState _state = AppState();
+  AppState _state = AppState();
   late WorkScheduleProvider _workScheduleProvider;
   final UserRepository _userRepository = UserRepository();
   bool isBusy = false;
@@ -27,6 +27,7 @@ class AppProvider with ChangeNotifier {
   }
 
   Future<AppState> loadUserData() async {
+    _state = await _userRepository.getUserData();
     _state.workScheduleState = await _workScheduleProvider.getWorkSchedule();
 
     return _state;

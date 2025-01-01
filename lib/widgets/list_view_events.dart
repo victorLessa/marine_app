@@ -47,7 +47,8 @@ class _CalendarEventsState extends State<CalendarEvents>
             DateFormat.E('pt_BR').format(calendarState.focusedDay);
 
         return Padding(
-          padding: const EdgeInsets.only(left: 5, bottom: 10, right: 5),
+          padding:
+              const EdgeInsets.only(left: 5, bottom: 10, top: 20, right: 5),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

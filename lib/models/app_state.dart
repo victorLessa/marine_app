@@ -11,4 +11,10 @@ class AppState {
   Map<String, dynamic> toMap() {
     return {'userName': userName.text};
   }
+
+  factory AppState.fromMap(Map<String, dynamic> map) {
+    return AppState(
+      userName: TextEditingController(text: map['userName']),
+    );
+  }
 }

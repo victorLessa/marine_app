@@ -192,6 +192,7 @@ class _EscalaScreenState extends State<EscalaScreen> {
                           onTap: () async {
                             DateTime? pickedDate = await showDatePicker(
                               context: context,
+                              initialDate: DateTime.now(),
                               currentDate: workScheduleState.boardingDay,
                               firstDate: DateTime(2000),
                               lastDate: DateTime(2101),

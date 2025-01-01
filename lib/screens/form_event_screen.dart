@@ -99,244 +99,241 @@ class _FormEventState extends State<FormEvent> {
 
   @override
   Widget build(BuildContext context) {
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
     return CustomView(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Escala'),
-        leading: Builder(
-          builder: (context) => IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                Provider.of<EventProvider>(context, listen: false)
-                    .cleanFormEvent();
-                Navigator.of(context).pop();
-              }),
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Evento'),
+          leading: Builder(
+            builder: (context) => IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Provider.of<EventProvider>(context, listen: false)
+                      .cleanFormEvent();
+                  Navigator.of(context).pop();
+                }),
+          ),
         ),
-      ),
-      body: Consumer<EventProvider>(
-        builder: (BuildContext context, eventProvider, child) {
-          EventState formEventState = eventProvider.formEventState;
-          return widget.eventId != null
-              ? FutureBuilder(
-                  future: eventProvider.findEventById(widget.eventId!),
-                  builder: (BuildContext context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Erro: ${snapshot.error}'),
-                      );
-                    } else if (!snapshot.hasData || snapshot.data == null) {
-                      return const Center(
-                        child: Text('Evento não encontrado'),
-                      );
-                    } else {
-                      eventProvider.setFormEventState(snapshot.data!);
-                      EventState formEventState = eventProvider.formEventState;
-                      return form(eventProvider, formEventState);
-                    }
-                  })
-              : form(eventProvider, formEventState);
-        },
-      ),
-    );
+        body: widget.eventId != null
+            ? FutureBuilder(
+                future: eventProvider.findEventById(widget.eventId!),
+                builder: (BuildContext context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Erro: ${snapshot.error}'),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data == null) {
+                    return const Center(
+                      child: Text('Evento não encontrado'),
+                    );
+                  } else {
+                    eventProvider.setFormEventState(snapshot.data!);
+                    return form(eventProvider);
+                  }
+                })
+            : form(eventProvider));
   }
 
-  Widget form(EventProvider eventProvider, EventState state) {
-    return Form(
-      key: _formKey,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            // Campo de texto 1
-            TextFormField(
-              controller: state.title,
-              decoration: const InputDecoration(
-                labelText: 'Título',
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor, insira um título';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget form(
+    EventProvider eventProvider,
+  ) {
+    return Consumer<EventProvider>(
+      builder: (BuildContext context, eventProvider, child) {
+        EventState state = eventProvider.formEventState;
+        return Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
               children: [
-                const Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                const SizedBox(
+                  height: 20,
+                ),
+                // Campo de texto 1
+                TextFormField(
+                  controller: state.title,
+                  decoration: const InputDecoration(
+                    labelText: 'Título',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira um título';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(
-                      Icons.watch_later_outlined,
-                      size: 36,
+                    const Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.watch_later_outlined,
+                          size: 36,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "Dia inteiro?",
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        )
+                      ],
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      "Dia inteiro?",
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                    Switch(
+                      activeColor: Colors.blueAccent,
+                      value: state.allDay,
+                      onChanged: (bool value) {
+                        eventProvider.setAllDay(value);
+                      },
                     )
                   ],
                 ),
-                Switch(
-                  activeColor: Colors.blueAccent,
-                  value: state.allDay,
-                  onChanged: (bool value) {
-                    eventProvider.setAllDay(value);
-                  },
-                )
-              ],
-            ),
-            const SizedBox(height: 15),
-            // Hora de inicio
-            Column(
-              children: [
-                // Hora de início
-                Padding(
-                  padding: const EdgeInsets.only(left: 45, right: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        child: Text(
-                          DateFormat('EEE, dd MMM yyyy', 'pt_BR')
-                              .format(state.startDay),
-                        ),
-                        onTap: () async {
-                          DateTime? dateTime = await showDatePicker(
-                            context: context,
-                            initialDate: state.startDay,
-                            firstDate: DateTime(1900),
-                            lastDate: state.endDay,
-                            locale: const Locale('pt', 'BR'),
-                          );
+                const SizedBox(height: 15),
+                // Hora de inicio
+                Column(
+                  children: [
+                    // Hora de início
+                    Padding(
+                      padding: const EdgeInsets.only(left: 45, right: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            child: Text(
+                              DateFormat('EEE, dd MMM yyyy', 'pt_BR')
+                                  .format(state.startDay),
+                            ),
+                            onTap: () async {
+                              DateTime? dateTime = await showDatePicker(
+                                context: context,
+                                initialDate: state.startDay,
+                                firstDate: DateTime(1900),
+                                lastDate: state.endDay,
+                                locale: const Locale('pt', 'BR'),
+                              );
 
-                          if (dateTime!.isAfter(state.endDay)) {
-                            eventProvider.setEndDay(dateTime);
-                          }
-                          eventProvider.setStartDay(dateTime);
-                        },
+                              if (dateTime!.isAfter(state.endDay)) {
+                                eventProvider.setEndDay(dateTime);
+                              }
+                              eventProvider.setStartDay(dateTime);
+                            },
+                          ),
+                          Visibility(
+                            visible: !state.allDay,
+                            child: InkWell(
+                              child: Text(state.startHour.format(context)),
+                              onTap: () async {
+                                TimeOfDay? time = await dialogTimePicker(
+                                    context,
+                                    initialEntryMode: entryMode);
+
+                                eventProvider.setStartHour(time);
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                      Visibility(
-                        visible: !state.allDay,
-                        child: InkWell(
-                          child: Text(state.startHour.format(context)),
-                          onTap: () async {
-                            TimeOfDay? time = await dialogTimePicker(context,
-                                initialEntryMode: entryMode);
-
-                            eventProvider.setStartHour(time);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 25),
-                // Hora de fim
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 45,
-                    right: 12,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        child: Text(
-                          DateFormat('EEE, dd MMM yyyy', 'pt_BR')
-                              .format(state.endDay),
-                        ),
-                        onTap: () async {
-                          DateTime? dateTime = await showDatePicker(
-                            context: context,
-                            initialDate: state.endDay,
-                            firstDate: state.startDay,
-                            lastDate: DateTime(2099),
-                            locale: const Locale('pt', 'BR'),
-                          );
-
-                          eventProvider.setEndDay(dateTime);
-                        },
-                      ),
-                      Visibility(
-                        visible: !state.allDay,
-                        child: InkWell(
-                          child: Text(state.endHour.format(context)),
-                          onTap: () async {
-                            TimeOfDay? time = await dialogTimePicker(context,
-                                initialEntryMode: entryMode);
-
-                            eventProvider.setEndHour(time);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 30),
-              ],
-            ),
-            // Campo de texto 2
-            TextFormField(
-              controller: state.description,
-              decoration: const InputDecoration(
-                labelText: 'Descrição',
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor, insira uma descrição';
-                }
-                return null;
-              },
-            ),
-
-            const SizedBox(height: 20),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Cor do Evento:'),
-                GestureDetector(
-                  onTap: () => _selectColor(context, eventProvider),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: state.color,
                     ),
-                    width: 50,
-                    height: 50,
+                    const SizedBox(height: 25),
+                    // Hora de fim
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 45,
+                        right: 12,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            child: Text(
+                              DateFormat('EEE, dd MMM yyyy', 'pt_BR')
+                                  .format(state.endDay),
+                            ),
+                            onTap: () async {
+                              DateTime? dateTime = await showDatePicker(
+                                context: context,
+                                initialDate: state.endDay,
+                                firstDate: state.startDay,
+                                lastDate: DateTime(2099),
+                                locale: const Locale('pt', 'BR'),
+                              );
+
+                              eventProvider.setEndDay(dateTime);
+                            },
+                          ),
+                          Visibility(
+                            visible: !state.allDay,
+                            child: InkWell(
+                              child: Text(state.endHour.format(context)),
+                              onTap: () async {
+                                TimeOfDay? time = await dialogTimePicker(
+                                    context,
+                                    initialEntryMode: entryMode);
+
+                                eventProvider.setEndHour(time);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                  ],
+                ),
+                // Campo de texto 2
+                TextFormField(
+                  controller: state.description,
+                  decoration: const InputDecoration(
+                    labelText: 'Descrição (Opcional)',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Cor do Evento:'),
+                    GestureDetector(
+                      onTap: () => _selectColor(context, eventProvider),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: state.color,
+                        ),
+                        width: 50,
+                        height: 50,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                // Botão de envio
+                SizedBox(
+                  width: double.infinity,
+                  child: ButtonLoading(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(Colors.blue),
+                    ),
+                    onPressed: () async {
+                      await submitEvent(context, eventProvider, state);
+                    },
+                    isBusy: eventProvider.formEventIsBusy,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-            // Botão de envio
-            SizedBox(
-              width: double.infinity,
-              child: ButtonLoading(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Colors.blue),
-                ),
-                onPressed: () async {
-                  await submitEvent(context, eventProvider, state);
-                },
-                isBusy: eventProvider.formEventIsBusy,
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
