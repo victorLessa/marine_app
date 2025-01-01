@@ -32,11 +32,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
           }),
           itemMenu(
             title: "Inicio",
-            backgroundColor: isActive(currentRoute, '/'),
+            backgroundColor: isActive(currentRoute, '/home'),
             icon: const Icon(Icons.home_outlined),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, '/');
+              Navigator.pushNamed(context, '/home');
             },
           ),
           itemMenu(
