@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:marine/providers/app_provider.dart';
-import 'package:marine/providers/event_provider.dart';
 import 'package:marine/providers/work_schedule_provider.dart';
+import 'package:marine/routes/paths.dart';
+import 'package:marine/widgets/utils_app.dart';
 import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -18,18 +19,24 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final appProvider = Provider.of<AppProvider>(context, listen: false);
-      final workScheduleProvider =
-          Provider.of<WorkScheduleProvider>(context, listen: false);
-      final appState = await appProvider.loadUserData();
-      final workSchedule = await workScheduleProvider.getWorkSchedule();
-      workScheduleProvider.setFormWorkSchedule(workSchedule);
-      if (mounted) {
-        if (appState.userName.text.isEmpty) {
-          Navigator.pushReplacementNamed(context, '/intro');
-          return;
-        } else {
-          Navigator.pushReplacementNamed(context, '/home');
+      try {
+        final appProvider = Provider.of<AppProvider>(context, listen: false);
+        final workScheduleProvider =
+            Provider.of<WorkScheduleProvider>(context, listen: false);
+        final appState = await appProvider.loadUserData();
+        final workSchedule = await workScheduleProvider.getWorkSchedule();
+        workScheduleProvider.setFormWorkSchedule(workSchedule);
+        if (mounted) {
+          if (appState.userName.text.isEmpty) {
+            Navigator.pushReplacementNamed(context, AppRouterPaths.intro);
+            return;
+          } else {
+            Navigator.pushReplacementNamed(context, AppRouterPaths.home);
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          snackError(context, e.toString());
         }
       }
     });
@@ -39,9 +46,13 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: Scaffold(
+        backgroundColor: Color.fromARGB(255, 154, 176, 189),
         body: Center(
-          child: Text("Carregando"),
-
+          child: Image(
+            image: AssetImage('assets/images/logo.png'),
+            width: 200, // Defina a largura desejada
+            height: 200, // Defina a altura desejada
+          ),
           // Add your splash screen UI components here
         ),
       ),

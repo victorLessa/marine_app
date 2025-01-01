@@ -15,8 +15,8 @@ class Legend extends StatelessWidget {
             width: 10,
             height: 10,
             decoration: BoxDecoration(
-              color: color, // Cor de fundo (opcional)
-              borderRadius: BorderRadius.circular(2),
+              border: Border.all(color: color), // Cor de fundo (opcional)
+              borderRadius: BorderRadius.circular(100),
             ),
           ),
         ),

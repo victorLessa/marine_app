@@ -97,11 +97,9 @@ class _CalendarPageState extends State<Calendar> {
       CalendarProvider calendarProvider) {
     DateTime focusedDay = calendarProvider.focusedDay;
 
-    if (focusedDay.isAtSameMomentAs(date)) {
+    if (isSameDay(focusedDay, date)) {
       return dayBuilder(AppColors.selectedColor, context, date);
-    } else if (date
-        .toDateOnly()
-        .isAtSameMomentAs(DateTime.now().toDateOnly())) {
+    } else if (isSameDay(date, DateTime.now())) {
       return dayBuilder(AppColors.todayColor, context, date);
     }
 

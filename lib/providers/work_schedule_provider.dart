@@ -136,12 +136,10 @@ class WorkScheduleProvider with ChangeNotifier {
 
       if (existingSchedule != null && workScheduleId != null) {
         await _workScheduleRepository.updateWorkSchedule(workScheduleId, data);
-
-        if (existingSchedule != data) await generateDaysOnBoard(data);
       } else {
         await _workScheduleRepository.createWorkSchedule(data);
-        await generateDaysOnBoard(data);
       }
+      await generateDaysOnBoard(data);
     } finally {
       isBusy = false;
       notifyListeners();

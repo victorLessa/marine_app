@@ -59,6 +59,7 @@ class _ViewEventState extends State<ViewEvent> {
   @override
   Widget build(BuildContext context) {
     return CustomView(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       appBar: AppBar(
         centerTitle: true,
         title:
@@ -127,7 +128,6 @@ class _ViewEventState extends State<ViewEvent> {
                         Container(
                           width: 20,
                           height: 20,
-                          margin: const EdgeInsets.only(top: 5),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
                               color: event.color),
@@ -143,6 +143,7 @@ class _ViewEventState extends State<ViewEvent> {
                               event.title.text,
                               style: const TextStyle(
                                 fontSize: 20,
+                                height: 1,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -164,11 +165,11 @@ class _ViewEventState extends State<ViewEvent> {
                       height: 20,
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Icon(Icons.notifications_none_outlined),
+                        const Icon(
+                          Icons.notifications_none_outlined,
+                          size: 20,
                         ),
                         Container(
                           width: 20,
@@ -186,13 +187,11 @@ class _ViewEventState extends State<ViewEvent> {
                       height: 20,
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Icon(
-                            Icons.description_outlined,
-                          ),
+                        const Icon(
+                          Icons.description_outlined,
+                          size: 20,
                         ),
                         Container(
                           width: 20,

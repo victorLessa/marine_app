@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marine/providers/app_provider.dart';
+import 'package:marine/routes/paths.dart';
 import 'package:marine/styles/app_style.dart';
 import 'package:provider/provider.dart';
 
@@ -32,20 +33,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
           }),
           itemMenu(
             title: "Inicio",
-            backgroundColor: isActive(currentRoute, '/home'),
+            backgroundColor: isActive(currentRoute, AppRouterPaths.home),
             icon: const Icon(Icons.home_outlined),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, '/home');
+              Navigator.pushNamed(context, AppRouterPaths.home);
             },
           ),
           itemMenu(
             title: "Configurar escala",
-            backgroundColor: isActive(currentRoute, '/escala'),
+            backgroundColor: isActive(currentRoute, AppRouterPaths.escala),
             icon: const Icon(Icons.calendar_month_outlined),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, '/escala');
+              Navigator.pushNamed(context, AppRouterPaths.escala);
             },
           ),
           itemMenu(

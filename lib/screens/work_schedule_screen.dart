@@ -48,7 +48,7 @@ class _EscalaScreenState extends State<EscalaScreen> {
                     children: [
                       NumberPicker(
                         value: workScheduleProvider.leftSchedule,
-                        minValue: 0,
+                        minValue: 2,
                         maxValue: 30,
                         step: 1,
                         itemWidth: 50,
@@ -59,7 +59,7 @@ class _EscalaScreenState extends State<EscalaScreen> {
                       const Text("/"),
                       NumberPicker(
                         value: workScheduleProvider.rightSchedule,
-                        minValue: 0,
+                        minValue: 2,
                         maxValue: 30,
                         step: 1,
                         itemWidth: 50,
@@ -116,6 +116,7 @@ class _EscalaScreenState extends State<EscalaScreen> {
     final workScheduleProvider =
         Provider.of<WorkScheduleProvider>(context, listen: false);
     return CustomView(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Escala'),

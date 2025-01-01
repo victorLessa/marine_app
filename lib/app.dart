@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:marine/routes/paths.dart';
 import 'package:marine/screens/form_event_screen.dart';
 import 'package:marine/screens/intro_slider_screen.dart';
 import 'package:marine/screens/splash_screen.dart';
@@ -40,15 +41,14 @@ class MyApp extends StatelessWidget {
       ),
       scrollBehavior: const MaterialScrollBehavior()
           .copyWith(dragDevices: PointerDeviceKind.values.toSet()),
-      initialRoute: '/splash',
+      initialRoute: AppRouterPaths.splash,
 
       routes: {
-        '/splash': (context) => const SplashScreen(),
-        '/intro': (context) => const IntroSliderScreen(),
-        '/home': (context) => const HomeScreen(),
-        '/escala': (context) => const EscalaScreen(),
-        '/radar': (context) => const RadarScreen(),
-        '/formEvent': (context) => const FormEvent(),
+        AppRouterPaths.splash: (context) => const SplashScreen(),
+        AppRouterPaths.intro: (context) => const IntroSliderScreen(),
+        AppRouterPaths.home: (context) => const HomeScreen(),
+        AppRouterPaths.escala: (context) => const EscalaScreen(),
+        AppRouterPaths.radar: (context) => const RadarScreen(),
       },
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:marine/providers/app_provider.dart';
+import 'package:marine/routes/paths.dart';
 import 'package:marine/widgets/button_loading.dart';
 import 'package:provider/provider.dart';
 
@@ -167,7 +168,8 @@ class _IntroSliderScreenState extends State<IntroSliderScreen> {
                             await appProvider.updateUserName(appProvider.state);
                             await appProvider.loadUserData();
                             if (context.mounted) {
-                              Navigator.pushReplacementNamed(context, '/home');
+                              Navigator.pushReplacementNamed(
+                                  context, AppRouterPaths.home);
                             }
                           }
                         },

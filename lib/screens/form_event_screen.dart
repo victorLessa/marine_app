@@ -196,7 +196,6 @@ class _FormEventState extends State<FormEvent> {
                     )
                   ],
                 ),
-                const SizedBox(height: 15),
                 // Hora de inicio
                 Column(
                   children: [

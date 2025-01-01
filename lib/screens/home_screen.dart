@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marine/providers/work_schedule_provider.dart';
+import 'package:marine/routes/paths.dart';
 import 'package:marine/screens/form_event_screen.dart';
 import 'package:marine/styles/app_style.dart';
 import 'package:marine/widgets/list_view_events.dart';
@@ -20,13 +21,16 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           TextButton(
+            style: ButtonStyle(
+              padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+                const EdgeInsets.symmetric(vertical: 1.0, horizontal: 8.0),
+              ),
+              minimumSize: WidgetStateProperty.all<Size>(
+                const Size(0, 0),
+              ),
+            ),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const FormEvent(),
-                ),
-              );
+              Navigator.pushNamed(context, AppRouterPaths.escala);
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -63,12 +67,7 @@ class HomeScreen extends StatelessWidget {
         ),
         backgroundColor: Colors.lightBlue,
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const FormEvent(),
-            ),
-          );
+          Navigator.pushNamed(context, AppRouterPaths.escala);
         },
       ),
       drawer: const CustomDrawer(),
@@ -78,9 +77,6 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               children: [
                 const Calendar(),
-                const SizedBox(
-                  height: 5,
-                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
