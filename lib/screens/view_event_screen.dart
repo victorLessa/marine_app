@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:marine/models/event_state.dart';
 import 'package:marine/providers/event_provider.dart';
-import 'package:marine/screens/form_event.dart';
+import 'package:marine/screens/form_event_screen.dart';
 import 'package:marine/widgets/custom_view.dart';
 import 'package:marine/widgets/utils_app.dart';
 import 'package:provider/provider.dart';

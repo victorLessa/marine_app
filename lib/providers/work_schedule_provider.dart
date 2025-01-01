@@ -5,12 +5,11 @@ import 'package:marine/models/work_schedule_state.dart';
 import 'package:marine/providers/event_provider.dart';
 import 'package:marine/repositories/work_schedule.dart';
 import 'package:marine/styles/app_style.dart';
-import 'package:provider/provider.dart';
 
 class WorkScheduleProvider with ChangeNotifier {
   final List<String> workScheduleOptions = ['14/14', '28/28', 'Personalizar'];
-  late WorkScheduleState _workScheduleState = WorkScheduleState(
-      schedule: TextEditingController(text: workScheduleOptions.first));
+  late WorkScheduleState _workScheduleState =
+      WorkScheduleState(schedule: TextEditingController(text: ''));
   final WorkScheduleRepository _workScheduleRepository =
       WorkScheduleRepository();
   int leftSchedule = 0;

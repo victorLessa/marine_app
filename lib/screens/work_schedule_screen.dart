@@ -249,6 +249,10 @@ class _EscalaScreenState extends State<EscalaScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: ButtonLoading(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    WidgetStateProperty.all(Colors.blue),
+                              ),
                               onPressed: () async =>
                                   await submit(workScheduleProvider),
                               isBusy: workScheduleProvider.isBusy),

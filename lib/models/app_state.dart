@@ -1,8 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:marine/models/work_schedule_state.dart';
 
 class AppState {
-  String userName;
+  TextEditingController userName;
   WorkScheduleState? workScheduleState;
 
-  AppState({this.userName = 'N/A', this.workScheduleState});
+  AppState({TextEditingController? userName, this.workScheduleState})
+      : userName = userName ?? TextEditingController();
+
+  Map<String, dynamic> toMap() {
+    return {'userName': userName.text};
+  }
 }

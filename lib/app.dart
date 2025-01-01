@@ -1,7 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:marine/screens/form_event.dart';
+import 'package:marine/screens/form_event_screen.dart';
+import 'package:marine/screens/intro_slider_screen.dart';
+import 'package:marine/screens/splash_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/work_schedule_screen.dart';
 import 'screens/radar_screen.dart';
@@ -38,9 +40,12 @@ class MyApp extends StatelessWidget {
       ),
       scrollBehavior: const MaterialScrollBehavior()
           .copyWith(dragDevices: PointerDeviceKind.values.toSet()),
-      initialRoute: '/',
+      initialRoute: '/splash',
+
       routes: {
-        '/': (context) => const HomeScreen(),
+        '/splash': (context) => const SplashScreen(),
+        '/intro': (context) => const IntroSliderScreen(),
+        '/home': (context) => const HomeScreen(),
         '/escala': (context) => const EscalaScreen(),
         '/radar': (context) => const RadarScreen(),
         '/formEvent': (context) => const FormEvent(),

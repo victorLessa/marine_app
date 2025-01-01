@@ -17,7 +17,7 @@ class DatabaseHelper {
   Future<Database> _initDatabase() async {
     // /data/user/0/com.example.marine/databases/app.db
     String path = join(await getDatabasesPath(), 'app.db');
-    // await deleteDatabase(path);
+    await deleteDatabase(path);
     return await openDatabase(
       path,
       version: 1,
@@ -44,6 +44,14 @@ class DatabaseHelper {
             boardingDay INTEGER,
             years INTEGER,
             preBoardingMeeting INTEGER
+            );
+            
+            ''');
+
+        await db.execute('''
+            CREATE TABLE user(
+            id INTEGER PRIMARY KEY,
+            userName TEXT
             );
             
             ''');

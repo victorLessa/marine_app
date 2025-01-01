@@ -325,6 +325,9 @@ class _FormEventState extends State<FormEvent> {
             SizedBox(
               width: double.infinity,
               child: ButtonLoading(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Colors.blue),
+                ),
                 onPressed: () async {
                   await submitEvent(context, eventProvider, state);
                 },

@@ -99,7 +99,9 @@ class _CalendarPageState extends State<Calendar> {
 
     if (focusedDay.isAtSameMomentAs(date)) {
       return dayBuilder(AppColors.selectedColor, context, date);
-    } else if (date.isAtSameMomentAs(DateTime.now().toDateOnly())) {
+    } else if (date
+        .toDateOnly()
+        .isAtSameMomentAs(DateTime.now().toDateOnly())) {
       return dayBuilder(AppColors.todayColor, context, date);
     }
 

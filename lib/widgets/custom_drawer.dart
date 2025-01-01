@@ -25,7 +25,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           Consumer<AppProvider>(builder: (context, appState, child) {
             return ListTile(
               title: Text(
-                'Bem vindo, ${appState.state.userName}',
+                'Bem vindo, ${appState.state.userName.text}',
                 style: AppFonts.drawerTitle,
               ),
             );

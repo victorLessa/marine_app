@@ -4,7 +4,7 @@ import 'package:marine/extensions/datetime.dart';
 import 'package:marine/models/event_state.dart';
 import 'package:marine/providers/calendar_provider.dart';
 import 'package:marine/providers/event_provider.dart';
-import 'package:marine/screens/view_event.dart';
+import 'package:marine/screens/view_event_screen.dart';
 import 'package:provider/provider.dart';
 
 class CalendarEvents extends StatefulWidget {

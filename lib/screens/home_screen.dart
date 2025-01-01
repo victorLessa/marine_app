@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marine/providers/work_schedule_provider.dart';
-import 'package:marine/screens/form_event.dart';
+import 'package:marine/screens/form_event_screen.dart';
 import 'package:marine/styles/app_style.dart';
 import 'package:marine/widgets/list_view_events.dart';
 import 'package:marine/widgets/custom_view.dart';
