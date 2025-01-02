@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:marine/providers/app_provider.dart';
 import 'package:marine/providers/work_schedule_provider.dart';
@@ -46,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: Scaffold(
-        backgroundColor: Color.fromARGB(255, 154, 176, 189),
+        backgroundColor: Color(0xFF8B9CFF),
         body: Center(
           child: Image(
             image: AssetImage('assets/images/logo.png'),

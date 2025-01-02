@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:marine/models/work_schedule_state.dart';
 import 'package:marine/providers/work_schedule_provider.dart';
+import 'package:marine/styles/app_style.dart';
 import 'package:marine/widgets/button_loading.dart';
 import 'package:marine/widgets/custom_view.dart';
 import 'package:marine/widgets/utils_app.dart';
@@ -78,7 +79,8 @@ class _EscalaScreenState extends State<EscalaScreen> {
                 width: double.infinity,
                 child: FilledButton(
                   style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(Colors.blue)),
+                      backgroundColor:
+                          WidgetStateProperty.all(AppColors.primaryColor)),
                   onPressed: () {
                     workScheduleProvider
                         .setSchedule(workScheduleProvider.workSchedule);
@@ -227,7 +229,7 @@ class _EscalaScreenState extends State<EscalaScreen> {
                             child: Row(
                               children: [
                                 Checkbox(
-                                  activeColor: Colors.blue,
+                                  activeColor: AppColors.thirtyColor,
                                   checkColor: Colors.white,
                                   value: workScheduleState.preBoardingMeeting,
                                   onChanged: (bool? value) {
@@ -252,8 +254,8 @@ class _EscalaScreenState extends State<EscalaScreen> {
                           width: double.infinity,
                           child: ButtonLoading(
                               style: ButtonStyle(
-                                backgroundColor:
-                                    WidgetStateProperty.all(Colors.blue),
+                                backgroundColor: WidgetStateProperty.all(
+                                    AppColors.primaryColor),
                               ),
                               onPressed: () async =>
                                   await submit(workScheduleProvider),

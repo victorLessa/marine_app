@@ -5,6 +5,7 @@ import 'package:marine/models/event_state.dart';
 import 'package:marine/providers/calendar_provider.dart';
 import 'package:marine/providers/event_provider.dart';
 import 'package:marine/screens/view_event_screen.dart';
+import 'package:marine/styles/app_style.dart';
 import 'package:provider/provider.dart';
 
 class CalendarEvents extends StatefulWidget {
@@ -42,9 +43,9 @@ class _CalendarEventsState extends State<CalendarEvents>
       builder: (context, calendarState, child) {
         EventProvider eventProvider = Provider.of<EventProvider>(context);
 
-        String day = calendarState.focusedDay.day.toString();
+        String day = calendarState.selectedDay.day.toString();
         String dayOfWeek =
-            DateFormat.E('pt_BR').format(calendarState.focusedDay);
+            DateFormat.E('pt_BR').format(calendarState.selectedDay);
 
         return Padding(
           padding:
@@ -63,9 +64,9 @@ class _CalendarEventsState extends State<CalendarEvents>
                     width: 45,
                     alignment: Alignment.center,
                     margin: const EdgeInsets.only(left: 0),
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Color.fromARGB(255, 123, 148, 164),
+                      color: AppColors.selectedColor,
                     ),
                     child: Text(
                       day,
@@ -80,8 +81,8 @@ class _CalendarEventsState extends State<CalendarEvents>
                     left: 10,
                   ),
                   child: FutureBuilder(
-                    future: eventProvider
-                        .findEventByDate(calendarState.focusedDay.toDateOnly()),
+                    future: eventProvider.findEventByDate(
+                        calendarState.selectedDay.toDateOnly()),
                     builder: (BuildContext context,
                         AsyncSnapshot<List<EventState>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {

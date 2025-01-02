@@ -69,7 +69,6 @@ class EventProvider with ChangeNotifier {
 
   void setStartDay(DateTime? value) {
     if (value != null) {
-      // Precisa salvar como UTC pq na hora se selecionar a data no table datepicker ele retorna o valor em UTC sem a hora
       _formEventState.startDay = value;
       notifyListeners();
     }
@@ -77,7 +76,6 @@ class EventProvider with ChangeNotifier {
 
   void setEndDay(DateTime? value) {
     if (value != null) {
-      // Precisa salvar como UTC pq na hora se selecionar a data no table datepicker ele retorna o valor em UTC sem a hora
       _formEventState.endDay = value;
       notifyListeners();
     }

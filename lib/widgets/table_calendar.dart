@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:marine/extensions/datetime.dart';
 import 'package:marine/models/event_state.dart';
 import 'package:marine/providers/calendar_provider.dart';
 import 'package:marine/providers/event_provider.dart';
@@ -55,10 +54,13 @@ class _CalendarPageState extends State<Calendar> {
               },
 
               calendarBuilders: CalendarBuilders(
-                todayBuilder: (context, date, focusedDay) =>
-                    dayBuilder(AppColors.todayColor, context, date),
+                todayBuilder: (context, date, focusedDay) => dayBuilder(
+                  context,
+                  date,
+                  AppColors.todayColor,
+                ),
                 selectedBuilder: (context, date, focusedDay) =>
-                    dayBuilder(AppColors.selectedColor, context, date),
+                    dayBuilder(context, date, AppColors.selectedColor),
                 markerBuilder: (context, day, List<EventState> events) {
                   if (events.isNotEmpty) {
                     return _buildEventsMarker(day, events, calendarProvider);
@@ -78,9 +80,13 @@ class _CalendarPageState extends State<Calendar> {
     });
   }
 
-  Widget dayBuilder(Color color, context, date) {
+  Widget dayBuilder(
+    context,
+    date,
+    Color color,
+  ) {
     return Container(
-      margin: const EdgeInsets.all(3.0),
+      margin: const EdgeInsets.all(5.0),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: color, // Cor de fundo para o dia de hoje
@@ -93,15 +99,25 @@ class _CalendarPageState extends State<Calendar> {
     );
   }
 
+  Decoration? decorationBox(DateTime date, DateTime selectedDay) {
+    if (isSameDay(selectedDay, date)) {
+      return BoxDecoration(
+        color: AppColors.selectedColor, // Cor de fundo para o dia de hoje
+        shape: BoxShape.circle,
+      );
+    } else if (isSameDay(date, DateTime.now())) {
+      return BoxDecoration(
+        color: AppColors.todayColor, // Cor de fundo para o dia de hoje
+        shape: BoxShape.circle,
+      );
+    }
+
+    return null;
+  }
+
   Widget _buildEventsMarker(DateTime date, List<EventState> events,
       CalendarProvider calendarProvider) {
-    DateTime focusedDay = calendarProvider.focusedDay;
-
-    if (isSameDay(focusedDay, date)) {
-      return dayBuilder(AppColors.selectedColor, context, date);
-    } else if (isSameDay(date, DateTime.now())) {
-      return dayBuilder(AppColors.todayColor, context, date);
-    }
+    DateTime selectedDay = calendarProvider.selectedDay;
 
     int embarkedIndex = events.indexWhere((EventState event) => event.embarked);
     if (embarkedIndex != -1) {
@@ -109,11 +125,12 @@ class _CalendarPageState extends State<Calendar> {
         alignment: Alignment.center,
         children: [
           Container(
-            margin: const EdgeInsets.all(3.0),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: events[embarkedIndex].color),
-            ),
+            margin: const EdgeInsets.all(5.0),
+            decoration: decorationBox(date, selectedDay) ??
+                BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: events[embarkedIndex].color),
+                ),
           ),
           Center(
             child: Text(

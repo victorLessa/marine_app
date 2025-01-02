@@ -4,4 +4,5 @@ class AppRouterPaths {
   static get intro => '/intro';
   static get escala => '/escala';
   static get radar => '/radar';
+  static get formEvent => '/formEvent';
 }

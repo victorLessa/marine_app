@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:marine/providers/app_provider.dart';
 import 'package:marine/routes/paths.dart';
+import 'package:marine/styles/app_style.dart';
 import 'package:marine/widgets/button_loading.dart';
 import 'package:provider/provider.dart';
 
@@ -22,92 +23,90 @@ class _IntroSliderScreenState extends State<IntroSliderScreen> {
 
   Widget introSlider() {
     return IntroSlider(
-        renderPrevBtn: const Text(
+        indicatorConfig: IndicatorConfig(
+            colorActiveIndicator: AppColors.primaryColor,
+            colorIndicator: AppColors.secondaryColor),
+        renderPrevBtn: Text(
           "Anterior",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+              fontWeight: FontWeight.w600, color: AppColors.primaryColor),
         ),
         backgroundColorAllTabs: Colors.white,
-        renderSkipBtn:
-            const Text("Pular", style: TextStyle(color: Colors.white)),
-        renderNextBtn:
-            const Text("Próximo", style: TextStyle(color: Colors.white)),
-        renderDoneBtn:
-            const Text("Finalizar", style: TextStyle(color: Colors.white)),
+        renderSkipBtn: Text("Pular",
+            style: TextStyle(
+                fontWeight: FontWeight.w600, color: AppColors.primaryColor)),
+        renderNextBtn: Text("Próximo",
+            style: TextStyle(
+                fontWeight: FontWeight.w600, color: AppColors.primaryColor)),
+        renderDoneBtn: Text("Finalizar",
+            style: TextStyle(
+                fontWeight: FontWeight.w600, color: AppColors.primaryColor)),
         isShowPrevBtn: true,
         isShowSkipBtn: false,
-        listContentConfig: const [
+        listContentConfig: [
           ContentConfig(
-            backgroundColor: Colors.blue,
+            pathImage: 'assets/images/calendario.png',
             widgetDescription: Column(
               children: [
                 Text(
-                  "Controle sua escala.",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600),
+                  "Controle sua escala",
+                  style: AppFonts.titleIntro,
                 ),
-                SizedBox(
-                  height: 10,
+                Container(
+                  height: 20,
                 ),
-                Text(
-                  "Aqui você controla sua escala de trabalho com precisão, deixa os calculos com a gente.",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  child: Text(
+                    "Aqui você controla sua escala de trabalho com precisão, deixa os calculos com a gente.",
+                    style: AppFonts.subtitleIntro,
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ],
             ),
           ),
           ContentConfig(
-            backgroundColor: Colors.blue,
+            pathImage: 'assets/images/mundo.png',
             widgetDescription: Column(
               children: [
                 Text(
                   "Aproveite seu tempo livre",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600),
+                  style: AppFonts.titleIntro,
                 ),
-                SizedBox(
-                  height: 10,
+                Container(
+                  height: 20,
                 ),
-                Text(
-                  "Te ajudamos a planejar suas folgas para curtir com a familia.",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  child: Text(
+                    "Te ajudamos a planejar suas folgas para curtir com a familia.",
+                    style: AppFonts.subtitleIntro,
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
+                )
               ],
             ),
           ),
           ContentConfig(
+            pathImage: 'assets/images/ferias.png',
+            widthImage: double.infinity,
             widgetDescription: Column(
               children: [
-                Text("Aproveite",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600)),
-                SizedBox(
-                  height: 10,
+                Text("Aproveite", style: AppFonts.titleIntro),
+                Container(
+                  height: 20,
                 ),
-                Text(
-                  "Se preocupe com o que realmente importa.",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  child: Text(
+                    "Se preocupe com o que realmente importa. Sua folga!",
+                    style: AppFonts.subtitleIntro,
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 )
               ],
             ),
-            backgroundColor: Colors.blue,
           ),
         ],
         onDonePress: () {
@@ -117,9 +116,12 @@ class _IntroSliderScreenState extends State<IntroSliderScreen> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: const Text(
+                  title: Text(
                     "Antes de começar precisamos saber seu nome",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.primaryColor,
+                        fontWeight: FontWeight.w600),
                     textAlign: TextAlign.center,
                   ),
                   content: Column(
@@ -132,12 +134,21 @@ class _IntroSliderScreenState extends State<IntroSliderScreen> {
                         key: _formKey,
                         child: TextFormField(
                           controller: appProvider.state.userName,
-                          decoration: const InputDecoration(
-                            labelText: "Nome",
-                            border: OutlineInputBorder(),
-                            enabledBorder: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(),
-                          ),
+                          decoration: InputDecoration(
+                              labelText: "Nome",
+                              labelStyle: TextStyle(
+                                  color: AppColors.secondaryColor,
+                                  fontWeight: FontWeight.w500),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: AppColors.secondaryColor)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: AppColors.secondaryColor)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: AppColors.secondaryColor)),
+                              fillColor: AppColors.secondaryColor),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Por favor, insira um nome';
@@ -159,9 +170,9 @@ class _IntroSliderScreenState extends State<IntroSliderScreen> {
                         ),
                         progressIndicatorColor: Colors.black,
                         isBusy: appProvider.isBusy,
-                        child: const Text(
+                        child: Text(
                           'Salvar',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: AppColors.primaryColor),
                         ),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {

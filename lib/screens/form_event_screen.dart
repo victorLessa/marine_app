@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:marine/models/event_state.dart';
 import 'package:marine/providers/calendar_provider.dart';
 import 'package:marine/providers/event_provider.dart';
+import 'package:marine/styles/app_style.dart';
 import 'package:marine/widgets/button_loading.dart';
 import 'package:marine/widgets/custom_view.dart';
 import 'package:marine/widgets/timer_picker.dart';
@@ -36,10 +37,10 @@ class _FormEventState extends State<FormEvent> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final eventProvider = Provider.of<EventProvider>(context, listen: false);
-      DateTime focusDay =
-          Provider.of<CalendarProvider>(context, listen: false).focusedDay;
-      eventProvider.setStartDay(focusDay);
-      eventProvider.setEndDay(focusDay);
+      DateTime selectedDay =
+          Provider.of<CalendarProvider>(context, listen: false).selectedDay;
+      eventProvider.setStartDay(selectedDay);
+      eventProvider.setEndDay(selectedDay);
     });
   }
 
@@ -188,7 +189,7 @@ class _FormEventState extends State<FormEvent> {
                       ],
                     ),
                     Switch(
-                      activeColor: Colors.blueAccent,
+                      activeColor: AppColors.thirtyColor,
                       value: state.allDay,
                       onChanged: (bool value) {
                         eventProvider.setAllDay(value);
@@ -323,7 +324,8 @@ class _FormEventState extends State<FormEvent> {
                   width: double.infinity,
                   child: ButtonLoading(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(Colors.blue),
+                      backgroundColor:
+                          WidgetStateProperty.all(AppColors.primaryColor),
                     ),
                     onPressed: () async {
                       await submitEvent(context, eventProvider, state);

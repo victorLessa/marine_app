@@ -49,6 +49,7 @@ class MyApp extends StatelessWidget {
         AppRouterPaths.home: (context) => const HomeScreen(),
         AppRouterPaths.escala: (context) => const EscalaScreen(),
         AppRouterPaths.radar: (context) => const RadarScreen(),
+        AppRouterPaths.formEvent: (context) => const FormEvent(),
       },
     );
   }
